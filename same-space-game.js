@@ -1,47 +1,12 @@
-function init() {
-    game.init();
-}
 
-/**
- * Define an object to hold all our images for the game so images
- * are only ever created once. This type of object is known as a
- * singleton.
- */
-var imageRepository = function() {
-};
+var game = new Game(); //primary game instance
 
-
-/**
- * Creates the Drawable object which will be the base class for
- * all drawable objects in the game. Sets up defualt variables
- * that all child objects will inherit, as well as the defualt
- * functions.
- */
-function Drawable() {
-}
-
-/**
- * Creates the Background object which will become a child of
- * the Drawable object. The background is drawn on the "background"
- * canvas and creates the illusion of moving by panning the image.
- */
-function Background() {
-}
-// Set Background to inherit properties from Drawable
-Background.prototype = new Drawable();
-
-
-/**
- * Creates the Bullet object which the ship fires. The bullets are
- * drawn on the "main" canvas.
- */
 function Bullet(object) {
 
 }
-Bullet.prototype = new Drawable();
 
 function QuadTree(boundBox, lvl) {
-    
+
 }
 
     this.getAllObjects = function(returnedObjects) {
@@ -78,30 +43,6 @@ function QuadTree(boundBox, lvl) {
     this.split = function() {
     };
 
-
-
-/**
- * Custom Pool object. Holds Bullet objects to be managed to prevent
- * garbage collection.
- * The pool works as follows:
- * - When the pool is initialized, it popoulates an array with
- *   Bullet objects.
- * - When the pool needs to create a new object for use, it looks at
- *   the last item in the array and checks to see if it is currently
- *   in use or not. If it is in use, the pool is full. If it is
- *   not in use, the pool "spawns" the last item in the array and
- *   then pops it from the end and pushed it back onto the front of
- *   the array. This makes the pool have free objects on the back
- *   and used objects in the front.
- * - When the pool animates its objects, it checks to see if the
- *   object is in use (no need to draw unused objects) and if it is,
- *   draws it. If the draw() function returns true, the object is
- *   ready to be cleaned so it "clears" the object and uses the
- *   array function splice() to remove the item from the array and
- *   pushes it to the back.
- * Doing this makes creating/destroying objects in the pool
- * constant.
- */
 function Pool(maxSize) {
     var size = maxSize; // Max bullets allowed in the pool
     var pool = [];
@@ -140,50 +81,52 @@ function Pool(maxSize) {
     };
 }
 
-
-/**
- * Create the Ship object that the player controls. The ship is
- * drawn on the "ship" canvas and uses dirty rectangles to move
- * around the screen.
- */
 function Ship() {
     this.speed = 3;
     this.bulletPool = new Pool(30);
     var fireRate = 15;
     var counter = 0;
     this.collidableWith = "enemyBullet";
-    this.type = "ship";
+    this.up = false;
+    this.left = false;
+    this.down = false;
+    this.right = false;
 
-    this.init = function(x, y, width, height) {
+    this.init = function(images) {
         // Defualt variables
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.sprite = new Kinetic.Image({
+          image: images.ship,
+          x: 175,
+          y: 520,
+          width: 50,
+          height: 50
+        });
         this.alive = true;
         this.isColliding = false;
         this.bulletPool.init("bullet");
     };
 
-    this.draw = function() {
-    };
     this.move = function() {
+      if (this.right && this.sprite.getX() < 350) {
+        this.sprite.setX(this.sprite.getX() + this.speed);
+      }
+      if (this.left && this.sprite.getX() > 10){
+        this.sprite.setX(this.sprite.getX() - this.speed);
+      }
+      if (this.up && this.sprite.getY() > 10) {
+        this.sprite.setY(this.sprite.getY() - this.speed);
+      }
+      if (this.down && this.sprite.getY() < 530) {
+        this.sprite.setY(this.sprite.getY() + this.speed);
+      }
     };
 
-    /*
-     * Fires two bullets
-     */
     this.fire = function() {
     };
 }
-Ship.prototype = new Drawable();
 
-
-/**
- * Create the Enemy ship object.
- */
 function Enemy() {
-    var percentFire = 0.01;
+    //var percentFire = 0.01;
     var chance = 0;
     this.alive = false;
     this.collidableWith = "bullet";
@@ -221,46 +164,74 @@ function Enemy() {
     };
 }
 
-Enemy.prototype = new Drawable();
-
-
-/**
- * Creates the Game object which will hold all objects and data for
- * the game.
- */
 function Game() {
-    /*
-     * Gets canvas information and context and sets up all game
-     * objects.
-     * Returns true if the canvas is supported and false if it
-     * is not. This is to stop the animation script from constantly
-     * running on browsers that do not support the canvas.
-     */
-    this.init = function() {
-        // Get the canvas elements
-        this.bgCanvas = document.getElementById('background');
-        this.shipCanvas = document.getElementById('ship');
-        this.mainCanvas = document.getElementById('main');
 
+  var images = {}; // texture container
 
-            // Initialize objects to contain their context and canvas
-            // information
-            Background.prototype.context = this.bgContext;
-            Background.prototype.canvasWidth = this.bgCanvas.width;
-            Background.prototype.canvasHeight = this.bgCanvas.height;
+  var sources = {
+              bg: 'Resources/starBackground.png',
+              ship: 'Resources/ship.png',
+              blueWpn: 'Resources/blueWeapon.png',
+              redWpn: 'Resources/redWeapon.png'
+            };
+  var background;
+  var stage;
+  var shipLayer;
+  var backlayer;
+  this.ship = new Ship();
 
-            Ship.prototype.context = this.shipContext;
-            Ship.prototype.canvasWidth = this.shipCanvas.width;
-            Ship.prototype.canvasHeight = this.shipCanvas.height;
+  this.init = function() {
+    var loadedImages = 0;
+    var numImages = 0;
+    for(var src in sources) {
+      numImages++;
+    }
+    for(var src in sources) {
+      images[src] = new Image();
+      images[src].onload = function() {
+        if(++loadedImages >= numImages) {
+        }
+      };
+      images[src].src = sources[src];
+    }
 
-            Bullet.prototype.context = this.mainContext;
-            Bullet.prototype.canvasWidth = this.mainCanvas.width;
-            Bullet.prototype.canvasHeight = this.mainCanvas.height;
+      stage = new Kinetic.Stage({
+                container: 'game-container',
+                width: 400,
+                height: 600
+              });
 
-            Enemy.prototype.context = this.mainContext;
-            Enemy.prototype.canvasWidth = this.mainCanvas.width;
-            Enemy.prototype.canvasHeight = this.mainCanvas.height;
-        };
+      shipLayer = new Kinetic.Layer();
+      backlayer = new Kinetic.Layer();
+      stage.add(backlayer);
+      stage.add(shipLayer);
+
+      this.ship.init(images);
+
+      background = new Kinetic.Image({
+        image: images.bg,
+        x: 0,
+        y: -9800,
+        width: 400,
+        height: 10527
+      });
+      backlayer.add(background);
+      shipLayer.add(this.ship.sprite);
+      stage.draw();
+      };
+
+    this.moveBackground = function() {
+      if (background.getY() > 0) {
+        background.setY(9600);
+      }
+      background.setY(background.getY() + 1);
+      backlayer.draw();
+    };
+
+    this.moveship = function() {
+      this.ship.move();
+      shipLayer.draw();
+    }
 
     // Spawn a new wave of enemies
     this.spawnWave = function() {
@@ -268,7 +239,7 @@ function Game() {
 
     // Start the animation loop
     this.start = function() {
-        
+      animate();
     };
 
     // Restart the game
@@ -280,24 +251,61 @@ function Game() {
     };
 }
 
-
-/**
- * The animation loop. Calls the requestAnimationFrame shim to
- * optimize the game loop and draws all game objects. This
- * function must be a gobal function and cannot be within an
- * object.
- */
 function animate() {
+   game.moveBackground();
+   game.moveship();
+   window.requestAnimationFrame(animate);
 }
 
-function detectCollision() {
-
+//pass Kinetic.Image type objects
+function detectCollision(objectA, objectB) {
+  if (objectA.x < objectB.x + objectB.width &&
+   objectA.x + objectA.width > objectB.x &&
+   objectA.y < objectB.y + objectB.height &&
+   objectA.height + objectA.y > objectB.y) {
+     return true;
+   } else {
+     return false;
+   }
 }
 
 document.onkeydown = function(e) {
+  var keyCode = e.keyCode;
+
+  if (keyCode == 87) { //w
+    game.ship.up = true;
+    game.ship.down = false;
+  }
+  else if (keyCode == 65) { //a
+    game.ship.left = true;
+    game.ship.right = false;
+  }
+  else if (keyCode == 83) { //s
+    game.ship.down = true;
+    game.ship.up = false;
+
+  }
+  else if (keyCode == 68) { //d
+    game.ship.right = true;
+    game.ship.left = false;
+  }
 };
 
 document.onkeyup = function(e) {
+  var keyCode = e.keyCode;
+
+  if (keyCode == 87) { //w
+    game.ship.up = false;
+  }
+  else if (keyCode == 65) { //a
+    game.ship.left = false;
+  }
+  else if (keyCode == 83) { //s
+    game.ship.down = false;
+  }
+  else if (keyCode == 68) { //d
+    game.ship.right = false;
+  }
 };
 
 window.requestAnimFrame = (function(){
@@ -310,3 +318,8 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
         };
 })();
+
+window.onload = function() {
+  game.init();
+  game.start();
+};

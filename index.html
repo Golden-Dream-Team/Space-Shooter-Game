@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
+    <meta charset="UTF-8">
+		<script src="kinetic-v5.1.0.min.js"></script>
 		<title>Space Shooter</title>
 		<style>
 			canvas {
@@ -12,17 +14,10 @@
 		</style>
 	</head>
 	<body>
-		<!-- The canvas for the panning background -->
-		<canvas id="background" width="600" height="360"></canvas>
-		<!-- The canvas for all enemy ships and bullets -->
-		<canvas id="main" width="600" height="360">
-		</canvas>
-		<!-- The canvas the ship uses (can only move up
-         one forth the screen. -->
-		<canvas id="ship" width="600" height="360">
-		</canvas>
+		<section id="game-container"></section>
+		<div>Controls: WASD</div>
 		<div class="score">SCORE: <span id="score"></span></div>
 		<div class="game-over" id="game-over">GAME OVER<p><span onclick="game.restart()">Restart</span></p></div>
-		<script src="some-space-game.js"></script>
+		<script src="same-space-game.js"></script>
 	</body>
 </html>
