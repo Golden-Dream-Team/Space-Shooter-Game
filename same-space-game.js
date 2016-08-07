@@ -1,11 +1,12 @@
-var game = new Game(); //primary game instance
+var game = new Game(); //Primary game instance
 
 
 function Bullet(object) {
+    var self = object,
+        type = "bullet",
+        isColliding = false;
     this.alive = false; // Is true if the bullet is currently in use
-    var self = object;
-    var type = "bullet";
-    var isColliding = false;
+
     /*
      * Sets the bullet values
     */
@@ -58,22 +59,27 @@ function Pool(maxSize) {
 
 
     this.init = function (object) {
+        var bullet,
+            enemy,
+            enemyBullet, i;
         if (object == "blueWpn") {
-            for (var i = 0; i < size; i += 1) {
-                var bullet = new Bullet("blueWpn");
+            for (i = 0; i < size; i += 1) {
+                bullet = new Bullet("blueWpn");
                 bullet.init(images.image.blueWpn, 0, 0);
                 bullet.type = "bullet";
                 pool[i] = bullet;
             }
-        } else if (object == "enemy") {
-            for (var i = 0; i < size; i += 1) {
-                var enemy = new Enemy();
+        }
+        else if (object == "enemy") {
+            for (i = 0; i < size; i += 1) {
+                enemy = new Enemy();
                 enemy.init(images.image.enemy, 0, 0);
                 pool[i] = enemy;
             }
-        } else if (object == "redWpn") {
-            for (var i = 0; i < size; i += 1) {
-                var enemyBullet = new Bullet("blueWpn");
+        }
+        else if (object == "redWpn") {
+            for (i = 0; i < size; i += 1) {
+                enemyBullet = new Bullet("blueWpn");
                 enemyBullet.init(images.image.blueWpn, 0, 0);
                 enemyBullet.type = "bullet";
                 pool[i] = enemyBullet;
@@ -219,21 +225,20 @@ function Enemy() {
 
 function Game() {
 
-    var images = {}; // texture container
-
-    var sources = {
-        bg: 'Resources/starBackground.png',
-        ship: 'Resources/ship.png',
-        enemy: 'Resources/player2.png',
-        blueWpn: 'Resources/blueWeapon.png',
-        redWpn: 'Resources/redWeapon.png'
-    };
-    var background;
-    var stage;
-    var shipLayer;
-    var backlayer;
-    var enemyLayer;
-    var enemyPool = new Pool(50);
+    var images = {}, // texture container
+        sources = {
+            bg: 'Resources/starBackground.png',
+            ship: 'Resources/ship.png',
+            enemy: 'Resources/player2.png',
+            blueWpn: 'Resources/blueWeapon.png',
+            redWpn: 'Resources/redWeapon.png'
+        },
+        background,
+        stage,
+        shipLayer,
+        backlayer,
+        enemyLayer,
+        enemyPool = new Pool(50);
     enemyPool.init("bullet");
     var shipPool = new Pool(30);
     shipPool.init("bullet");
@@ -244,7 +249,7 @@ function Game() {
         var numImages = Object.keys(sources).length;
 
         for (var src in sources) {
-            
+
             images[src] = new Image();
             images[src].src = sources[src];
         }
@@ -257,8 +262,6 @@ function Game() {
 
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
-
-
 
         this.ship.init(images);
         this.enemy.init(images);
@@ -324,7 +327,8 @@ function detectCollision(objectA, objectB) {
         objectA.y < objectB.y + objectB.height &&
         objectA.height + objectA.y > objectB.y) {
         return true;
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -348,7 +352,7 @@ document.onkeydown = function (e) {
     else if (keyCode === 68) { //d
         game.ship.right = true;
         game.ship.left = false;
-    } 
+    }
     else if (keyCode === 32) {
         game.ship.fire();
     }
@@ -368,7 +372,7 @@ document.onkeyup = function (e) {
     }
     else if (keyCode === 68) { //d
         game.ship.right = false;
-    } 
+    }
     else if (keyCode === 32) {
         game.ship.fire();
     }
@@ -377,11 +381,14 @@ document.body.onkeydown = function (e) {
     var keyCode = e.keyCode;
     if (keyCode === 38) {
         game.enemy.up = true;
-    } else if (keyCode === 40) {
+    }
+    else if (keyCode === 40) {
         game.enemy.down = true;
-    } else if (keyCode === 37) {
+    }
+    else if (keyCode === 37) {
         game.enemy.left = true;
-    } else if (keyCode === 39) {
+    }
+    else if (keyCode === 39) {
         game.enemy.right = true;
     }
 };
@@ -389,11 +396,14 @@ document.body.onkeyup = function (e) {
     var keyCode = e.keyCode;
     if (keyCode === 38) {
         game.enemy.up = false;
-    } else if (keyCode === 40) {
+    }
+    else if (keyCode === 40) {
         game.enemy.down = false;
-    } else if (keyCode === 37) {
+    }
+    else if (keyCode === 37) {
         game.enemy.left = false;
-    } else if (keyCode === 39) {
+    }
+    else if (keyCode === 39) {
         game.enemy.right = false;
     }
 };
