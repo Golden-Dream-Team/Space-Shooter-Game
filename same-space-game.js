@@ -241,17 +241,11 @@ function Game() {
     this.enemy = new Enemy();
 
     this.init = function () {
-        var loadedImages = 0;
-        var numImages = 0;
+        var numImages = Object.keys(sources).length;
+
         for (var src in sources) {
-            numImages++;
-        }
-        for (src in sources) {
+            
             images[src] = new Image();
-            images[src].onload = function () {
-                if (++loadedImages >= numImages) {
-                }
-            };
             images[src].src = sources[src];
         }
 
@@ -301,8 +295,6 @@ function Game() {
         this.enemy.move();
         shipLayer.draw();
     };
-
-
 
     // Start the animation loop
     this.start = function () {
@@ -356,7 +348,8 @@ document.onkeydown = function (e) {
     else if (keyCode === 68) { //d
         game.ship.right = true;
         game.ship.left = false;
-    } else if (keyCode === 32) {
+    } 
+    else if (keyCode === 32) {
         game.ship.fire();
     }
 };
@@ -375,7 +368,8 @@ document.onkeyup = function (e) {
     }
     else if (keyCode === 68) { //d
         game.ship.right = false;
-    } else if (keyCode === 32) {
+    } 
+    else if (keyCode === 32) {
         game.ship.fire();
     }
 };
