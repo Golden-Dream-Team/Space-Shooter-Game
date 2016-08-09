@@ -65,7 +65,7 @@ function Pool(maxSize) {
         if (object == "blueWpn") {
             for (i = 0; i < size; i += 1) {
                 bullet = new Bullet("blueWpn");
-                bullet.init(images.image.blueWpn, 0, 0);
+                bullet.init(images.blueWpn, 0, 0);
                 bullet.type = "bullet";
                 pool[i] = bullet;
             }
@@ -73,14 +73,14 @@ function Pool(maxSize) {
         else if (object == "enemy") {
             for (i = 0; i < size; i += 1) {
                 enemy = new Enemy();
-                enemy.init(images.image.enemy, 0, 0);
+                enemy.init(images.enemy, 0, 0);
                 pool[i] = enemy;
             }
         }
         else if (object == "redWpn") {
             for (i = 0; i < size; i += 1) {
                 enemyBullet = new Bullet("blueWpn");
-                enemyBullet.init(images.image.blueWpn, 0, 0);
+                enemyBullet.init(images.blueWpn, 0, 0);
                 enemyBullet.type = "bullet";
                 pool[i] = enemyBullet;
             }
@@ -122,12 +122,12 @@ function Ship() {
     this.down = false;
     this.right = false;
 
-    this.init = function (images) {
+    this.init = function (images, x, y) {
         // Defualt variables
         this.sprite = new Kinetic.Image({
             image: images.ship,
-            x: 175,
-            y: 520,
+            x: x,//175
+            y: y,//520
             width: 50,
             height: 50
         });
@@ -153,7 +153,6 @@ function Ship() {
 
     this.fire = function () {
         game.shipPool.get(this.x + 6, this.y, 3);
-
     };
 }
 
@@ -177,8 +176,8 @@ function Enemy() {
         // Defualt variables
         this.sprite = new Kinetic.Image({
             image: images.enemy,
-            x: this.x,
-            y: this.y,
+            x: x,
+            y: y,
             width: 50,
             height: 50
         });
@@ -263,8 +262,9 @@ function Game() {
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
 
-        this.ship.init(images);
-        this.enemy.init(images);
+        this.ship.init(images, 175, 535);
+        this.enemy.init(images, 175, 20);
+
 
         background = new Kinetic.Image({
             image: images.bg,
@@ -280,6 +280,10 @@ function Game() {
         stage.add(shipLayer);
         stage.draw();
     };
+
+    this.getImgs = function () {
+      return images;
+    }
 
     this.moveBackground = function () {
         if (background.getY() === 0) {
@@ -322,89 +326,62 @@ function animate() {
 
 //pass Kinetic.Image type objects
 function detectCollision(objectA, objectB) {
-    if (objectA.x < objectB.x + objectB.width &&
+    return (objectA.x < objectB.x + objectB.width &&
         objectA.x + objectA.width > objectB.x &&
         objectA.y < objectB.y + objectB.height &&
-        objectA.height + objectA.y > objectB.y) {
-        return true;
-    }
-    else {
-        return false;
-    }
+        objectA.height + objectA.y > objectB.y)
 }
 
-document.onkeydown = function (e) {
-    var keyCode = e.keyCode;
-
-    if (keyCode === 87) { //w
-        game.ship.up = true;
-        game.ship.down = false;
-    }
-    else if (keyCode === 65) { //a
-        game.ship.left = true;
-        game.ship.right = false;
-    }
-    else if (keyCode === 83) { //s
-        game.ship.down = true;
-        game.ship.up = false;
-
-    }
-    else if (keyCode === 68) { //d
-        game.ship.right = true;
-        game.ship.left = false;
-    }
-    else if (keyCode === 32) {
-        game.ship.fire();
-    }
-};
-
-document.onkeyup = function (e) {
-    var keyCode = e.keyCode;
-
-    if (keyCode === 87) { //w
-        game.ship.up = false;
-    }
-    else if (keyCode === 65) { //a
-        game.ship.left = false;
-    }
-    else if (keyCode === 83) { //s
-        game.ship.down = false;
-    }
-    else if (keyCode === 68) { //d
-        game.ship.right = false;
-    }
-    else if (keyCode === 32) {
-        game.ship.fire();
-    }
-};
 document.body.onkeydown = function (e) {
     var keyCode = e.keyCode;
-    if (keyCode === 38) {
+    if (keyCode === 38) { //upKey
         game.enemy.up = true;
-    }
-    else if (keyCode === 40) {
+        game.enemy.down = false;
+    } else if (keyCode === 40) { //downKey
         game.enemy.down = true;
-    }
-    else if (keyCode === 37) {
+        game.enemy.up = false;
+    } else if (keyCode === 37) { //leftKey
         game.enemy.left = true;
-    }
-    else if (keyCode === 39) {
+        game.enemy.right = false;
+    } else if (keyCode === 39) { //rightKey
         game.enemy.right = true;
+        game.enemy.left = false;
+    } else if (keyCode === 17) { //rightCtrl
+        game.enemy.fire();
+    }else if (keyCode === 87) { //w
+        game.ship.up = true;
+        game.ship.down = false;
+    }else if (keyCode === 65) { //a
+        game.ship.left = true;
+        game.ship.right = false;
+    }else if (keyCode === 83) { //s
+        game.ship.down = true;
+        game.ship.up = false;
+    } else if (keyCode === 68) { //d
+        game.ship.right = true;
+        game.ship.left = false;
+    } else if (keyCode === 32) { //space
+        game.ship.fire();
     }
 };
 document.body.onkeyup = function (e) {
     var keyCode = e.keyCode;
-    if (keyCode === 38) {
+    if (keyCode === 38) { //upKey
         game.enemy.up = false;
-    }
-    else if (keyCode === 40) {
+    } else if (keyCode === 40) { //downKey
         game.enemy.down = false;
-    }
-    else if (keyCode === 37) {
+    } else if (keyCode === 37) { //leftKey
         game.enemy.left = false;
-    }
-    else if (keyCode === 39) {
+    } else if (keyCode === 39) { //rightKey
         game.enemy.right = false;
+    } else if (keyCode === 87) { //w
+        game.ship.up = false;
+    } else if (keyCode === 65) { //a
+        game.ship.left = false;
+    } else if (keyCode === 83) { //s
+        game.ship.down = false;
+    } else if (keyCode === 68) { //d
+        game.ship.right = false;
     }
 };
 window.requestAnimFrame = (function () {
