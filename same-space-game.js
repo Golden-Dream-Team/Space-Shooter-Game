@@ -18,6 +18,17 @@ function Bullet(object) {
         this.alive = true;
     };
 
+    // this.draw = function() {
+	// 	this.context.clearRect(this.x, this.y, this.width, this.height);
+	// 	this.y -= this.speed;
+	// 	if (this.y <= 0 - this.height) {
+	// 		return true;
+	// 	}
+	// 	else {
+	// 		this.context.drawImage(images.bullet, this.x, this.y);
+	// 	}
+	// };
+
     this.init = function (images, x, y) {
         this.sprite = new Kinetic.Image({
             image: images.image.blueWpn,
@@ -107,6 +118,17 @@ function Pool(maxSize) {
      * clears it and pushes it to the front of the array.
      */
     this.animate = function () {
+		for (var i = 0; i < size; i++) {
+			// Only draw until we find a bullet that is not alive
+			if (pool[i].alive) {
+				if (pool[i].draw()) {
+					pool[i].clear();
+					pool.push((pool.splice(i,1))[0]);
+				}
+			}
+			else
+				break;
+		}
     };
 }
 
@@ -221,6 +243,46 @@ function Enemy() {
         this.isColliding = false;
     };
 }
+
+// var imageRepository = function() {
+// 	// Define images
+// 	this.background = new Kinetic.Layer();
+// 	this.ship = new Kinetic.Layer();
+// 	this.enemy = new Kinetic.Layer();
+// 	this.blueWpn = new Kinetic.Layer();
+// 	this.redWpn = new Kinetic.Layer();
+// 	// Ensure all images have loaded before starting the game
+// 	var numImages = 5;
+// 	var numLoaded = 0;
+// 	function imageLoaded() {
+// 		numLoaded++;
+// 		if (numLoaded === numImages) {
+// 			window.init();
+// 		}
+// 	}
+// 	this.background.onload = function() {
+// 		imageLoaded();
+// 	}
+// 	this.spaceship.onload = function() {
+// 		imageLoaded();
+// 	}
+// 	this.enemy.onload = function() {
+// 		imageLoaded();
+// 	}
+//     this.blueWpn.onload = function() {
+// 		imageLoaded();
+// 	}
+//     this.redWpn.onload = function() {
+// 		imageLoaded();
+// 	}
+// 	// Set images src
+// 	this.background.src = "Resources/starBackground.png";
+// 	this.ship.src = "'Resources/ship.png";
+// 	this.enemy.src = "Resources/player2.png";
+// 	this.blueWpn.src = "Resources/blueWeapon.png";
+// 	this.redWpn.src = "Resources/redWeapon.png";
+    
+// }
 
 function Game() {
 
