@@ -259,7 +259,9 @@ function Game() {
         shipLayer,
         backlayer,
         bulletLayer,
-        uiDisplayLayer;
+        uiDisplayLayer,
+        shipHP = 10,
+        enemyHP = 10;
 
     this.init = function () {
 
@@ -298,23 +300,23 @@ function Game() {
         stage.add(bulletLayer);
     };
 
-    function decreaseEnemyHP(images) {
-    for (i = 0; i < game.enemy.hitPoints; i += 1) {
+    function decreaseEnemyHP(images, enemyHP) {
+        for (i = 0; i < enemyHP; i += 1) {
 
-        var secondPlayerHealth = new Kinetic.Image({
-            image: images.healthBlue,
-            x: 420 + (i * 16),
-            y: 50,
-            width: 16,
-            height: 20,
-        });
+            var secondPlayerHealth = new Kinetic.Image({
+                image: images.healthBlue,
+                x: 420 + (i * 16),
+                y: 50,
+                width: 16,
+                height: 20,
+            });
 
-        uiDisplayLayer.add(secondPlayerHealth);
+            uiDisplayLayer.add(secondPlayerHealth);
+        }
     }
-}
 
-function decreaseShipHP(images) {
-        for (i = 0; i < game.ship.hitPoints; i += 1) {
+    function decreaseShipHP(images, shipHP) {
+        for (i = 0; i < shipHP; i += 1) {
 
             var firstPlayerHealth = new Kinetic.Image({
                 image: images.healthGreen,
@@ -344,11 +346,21 @@ function decreaseShipHP(images) {
     };
 
     this.drawUiDisplay = function () {
-        if (dawda){
-            decreaseEnemyHP(game.textures.images);
-            decreaseShipHP(game.textures.images);
+        // Must clear after every hit
+        if (game.ship.hitPoints !== shipHP) {
+            shipHP = game.ship.hitPoints;
+            decreaseShipHP(game.textures.images, shipHP);
+            uiDisplayLayer.draw();
         }
-        uiDisplayLayer.draw();
+        if (game.enemy.hitPoints !== enemyHP) {
+            enemyHP = game.enemy.hitPoints;
+            //console.log(enemyHP);
+            decreaseEnemyHP(game.textures.images, enemyHP);
+            uiDisplayLayer.draw();
+        }
+        else {
+            uiDisplayLayer.draw();
+        }
         // if(detectCollision()){
         //     setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
         //     uiDisplayLayer.draw();
