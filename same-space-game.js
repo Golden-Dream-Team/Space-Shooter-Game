@@ -40,15 +40,15 @@ function Bullet(image, x, y, direction) {
 
     this.move = function () {
         if (detectCollision(this.sprite, game.enemy.sprite)) {
-          game.enemy.hitPoints -= 1;
-          this.sprite.setX(-20);
-          this.sprite.setY(-20);
+            game.enemy.hitPoints -= 1;
+            this.sprite.setX(-20);
+            this.sprite.setY(-20);
         }
 
         if (detectCollision(this.sprite, game.ship.sprite)) {
-          game.ship.hitPoints -= 1;
-          this.sprite.setX(-20);
-          this.sprite.setY(-20);
+            game.ship.hitPoints -= 1;
+            this.sprite.setX(-20);
+            this.sprite.setY(-20);
         }
 
         if (this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20) {
@@ -120,6 +120,7 @@ function Ship(images, x, y) {
         width: 50,
         height: 50
     });
+
 
     this.move = function () {
         this.bulletPool.animate();
@@ -203,7 +204,10 @@ function UIDisplay(images) {
     });
 }
 
-function setupUILayer(uiLayer, images) {
+function setupUILayer(uiLayer, images, ship, enemy) {
+
+    this.shipHealth = game.ship.hitPoints;
+    this.enemyHealth = game.enemy.hitPoints;
 
     var gameTitle = new Kinetic.Text({
         x: 410,
@@ -212,7 +216,8 @@ function setupUILayer(uiLayer, images) {
         fontSize: 32,
         fontFamily: 'Capture it',
         fill: 'white'
-    });
+    }),
+        i;
 
     var firstPlayerControls = new Kinetic.Text({
         x: 410,
@@ -235,38 +240,10 @@ function setupUILayer(uiLayer, images) {
         fill: 'white'
     });
 
-// Can be done with Kinetic.Image of a health bar and x will vary
-// Function to cut WIDTH of image when ship is shot
+    // Can be done with Kinetic.Image of a health bar and x will vary
+    // Function to cut WIDTH of image when ship is shot
 
-
-        uiLayer.add(uiDisplay.sprite);
-
-            for (var i = 0; i < 10; i+=1) {
-
-            var firstPlayerHealth = new Kinetic.Image({
-                image: images.healthGreen,
-                x: 420 + (i*16),
-                y: 525,
-                width: 16,
-                height: 20,
-            });
-
-            uiLayer.add(firstPlayerHealth);
-        }
-
-        for ( i = 0; i < 10; i+=1) {
-
-            var secondPlayerHealth = new Kinetic.Image({
-                image: images.healthBlue,
-                x: 420 + (i*16),
-                y: 50,
-                width: 16,
-                height: 20,
-            });
-
-            uiLayer.add(secondPlayerHealth);
-        }
-
+    uiLayer.add(uiDisplay.sprite);
 
     uiLayer.add(gameTitle);
     uiLayer.add(firstPlayerControls);
@@ -274,12 +251,15 @@ function setupUILayer(uiLayer, images) {
 
 }
 
+
+
 function Game() {
     var stage,
         background,
         shipLayer,
         backlayer,
-        bulletLayer;
+        bulletLayer,
+        uiDisplayLayer;
 
     this.init = function () {
 
@@ -301,7 +281,7 @@ function Game() {
         background = new Background(this.textures.images);
         uiDisplay = new UIDisplay(this.textures.images);
 
-        setupUILayer(uiDisplayLayer, this.textures.images);
+        setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
 
         backlayer.add(background.sprite);
         shipLayer.add(this.ship.sprite);
@@ -318,6 +298,37 @@ function Game() {
         stage.add(bulletLayer);
     };
 
+    function decreaseEnemyHP(images) {
+    for (i = 0; i < game.enemy.hitPoints; i += 1) {
+
+        var secondPlayerHealth = new Kinetic.Image({
+            image: images.healthBlue,
+            x: 420 + (i * 16),
+            y: 50,
+            width: 16,
+            height: 20,
+        });
+
+        uiDisplayLayer.add(secondPlayerHealth);
+    }
+}
+
+function decreaseShipHP(images) {
+        for (i = 0; i < game.ship.hitPoints; i += 1) {
+
+            var firstPlayerHealth = new Kinetic.Image({
+                image: images.healthGreen,
+                x: 420 + (i * 16),
+                y: 525,
+                width: 16,
+                height: 20,
+            });
+
+            uiDisplayLayer.add(firstPlayerHealth);
+        }
+    }
+
+
     this.moveBackground = function () {
         if (background.sprite.getY() === 0) {
             background.sprite.setY(-9600);
@@ -333,7 +344,15 @@ function Game() {
     };
 
     this.drawUiDisplay = function () {
+        if (dawda){
+            decreaseEnemyHP(game.textures.images);
+            decreaseShipHP(game.textures.images);
+        }
         uiDisplayLayer.draw();
+        // if(detectCollision()){
+        //     setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
+        //     uiDisplayLayer.draw();
+        // }
     };
 
     this.moveenemy = function () {
