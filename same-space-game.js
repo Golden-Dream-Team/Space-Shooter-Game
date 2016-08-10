@@ -1,5 +1,60 @@
 var game = new Game(); //Primary game instance
 
+function imageRepository() {
+	// this.background = new Kinetic.Layer();
+	// this.ship = new Kinetic.Layer();
+	// this.enemy = new Kinetic.Layer();
+	// this.blueWpn = new Kinetic.Layer();
+	// this.redWpn = new Kinetic.Layer();
+  this.images = {}; // texture container
+  var  sources = {
+          bg: 'Resources/starBackground.png',
+          ship: 'Resources/ship.png',
+          enemy: 'Resources/player2.png',
+          blueWpn: 'Resources/blueWeapon.png',
+          redWpn: 'Resources/redWeapon.png'
+      }
+	// Ensure all images have loaded before starting the game
+
+  var numImages = Object.keys(sources).length;
+
+  for (var src in sources) {
+      this.images[src] = new Image();
+     this.images[src].src = sources[src];
+  }
+  //
+	// var numImages = 5;
+	// var numLoaded = 0;
+  //
+	// function imageLoaded() {
+	// 	numLoaded++;
+	// 	if (numLoaded === numImages) {
+	// 		window.init();
+	// 	}
+	// }
+	// this.background.onload = function() {
+	// 	imageLoaded();
+	// }
+	// this.spaceship.onload = function() {
+	// 	imageLoaded();
+	// }
+	// this.enemy.onload = function() {
+	// 	imageLoaded();
+	// }
+  //   this.blueWpn.onload = function() {
+	// 	imageLoaded();
+	// }
+  //   this.redWpn.onload = function() {
+	// 	imageLoaded();
+	// }
+	// // Set images src
+	// this.background.src = "Resources/starBackground.png";
+	// this.ship.src = "'Resources/ship.png";
+	// this.enemy.src = "Resources/player2.png";
+	// this.blueWpn.src = "Resources/blueWeapon.png";
+	// this.redWpn.src = "Resources/redWeapon.png";
+
+}
 
 function Bullet() {
     var type = "bullet",
@@ -50,12 +105,16 @@ function Pool(maxSize) {
         var bullet,
             enemy,
             enemyBullet, i;
+            
         if (object == "blueWpn") {
             for (i = 0; i < size; i += 1) {
-                bullet = new Bullet("blueWpn");
-                bullet.init(images.blueWpn, 0, 0);
+                bullet = new Bullet();
+                bullet.init(0,0, game.textures.images.blueWpn.width,
+			            game.textures.images.blueWpn.height);
                 bullet.type = "bullet";
                 pool[i] = bullet;
+                console.log(5);
+                
             }
         }
         else if (object == "redWpn") {
@@ -111,7 +170,7 @@ function Background(images) {
 function Ship(images, x, y) {
     this.speed = 3;
     this.bulletPool = new Pool(30);
-    this.bulletPool.init();
+    this.bulletPool.init("blueWpn");
     var fireRate = 15;
     var counter = 0;
     this.collidableWith = "redWpn";
@@ -206,66 +265,9 @@ function Enemy(images, x, y) {
 
 // TODO: Should intergrate imagePepository and change the rources of init and draw images ( I have retup the image repo for kinetic, I think )
 
-function imageRepository() {
-	// this.background = new Kinetic.Layer();
-	// this.ship = new Kinetic.Layer();
-	// this.enemy = new Kinetic.Layer();
-	// this.blueWpn = new Kinetic.Layer();
-	// this.redWpn = new Kinetic.Layer();
-  this.images = {}; // texture container
-  var  sources = {
-          bg: 'Resources/starBackground.png',
-          ship: 'Resources/ship.png',
-          enemy: 'Resources/player2.png',
-          blueWpn: 'Resources/blueWeapon.png',
-          redWpn: 'Resources/redWeapon.png'
-      }
-	// Ensure all images have loaded before starting the game
 
-  var numImages = Object.keys(sources).length;
-
-  for (var src in sources) {
-      this.images[src] = new Image();
-     this.images[src].src = sources[src];
-  }
-  //
-	// var numImages = 5;
-	// var numLoaded = 0;
-  //
-	// function imageLoaded() {
-	// 	numLoaded++;
-	// 	if (numLoaded === numImages) {
-	// 		window.init();
-	// 	}
-	// }
-	// this.background.onload = function() {
-	// 	imageLoaded();
-	// }
-	// this.spaceship.onload = function() {
-	// 	imageLoaded();
-	// }
-	// this.enemy.onload = function() {
-	// 	imageLoaded();
-	// }
-  //   this.blueWpn.onload = function() {
-	// 	imageLoaded();
-	// }
-  //   this.redWpn.onload = function() {
-	// 	imageLoaded();
-	// }
-	// // Set images src
-	// this.background.src = "Resources/starBackground.png";
-	// this.ship.src = "'Resources/ship.png";
-	// this.enemy.src = "Resources/player2.png";
-	// this.blueWpn.src = "Resources/blueWeapon.png";
-	// this.redWpn.src = "Resources/redWeapon.png";
-
-}
 
 function Game() {
-    this.ship = undefined;
-    this.enemy = undefined;
-    this.textures = undefined;
     var background;
 
     this.init = function () {
