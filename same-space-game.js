@@ -7,7 +7,8 @@ function imageRepository() {
           ship: 'Resources/ship.png',
           enemy: 'Resources/player2.png',
           blueWpn: 'Resources/blueWeapon.png',
-          redWpn: 'Resources/redWeapon.png'
+          redWpn: 'Resources/redWeapon.png',
+          uiDisplay : 'Resources/metalbeamcenter.jpg'
       };
 	// Ensure all images have loaded before starting the game
 
@@ -86,16 +87,6 @@ function Pool(maxSize, image, direction) {
             }
         };
     }
-
-function Background(images) {
-  this.sprite = new Kinetic.Image({
-      image: images.bg,
-      x: 0,
-      y: -9800,
-      width: 400,
-      height: 10527
-  });
-}
 
 function Ship(images, x, y) {
     this.speed = 3;
@@ -176,6 +167,26 @@ function Enemy(images, x, y) {
     };
 }
 
+function Background(images) {
+  this.sprite = new Kinetic.Image({
+      image: images.bg,
+      x: 0,
+      y: -9800,
+      width: 400,
+      height: 10527
+  });
+}
+
+function UIDisplayBackground(images) {
+    this.sprite = new Kinetic.Image({
+        image: images.uiDisplay,
+        x: 400,
+        y: 0,
+        width: 200,
+        height: 600
+    });
+}
+
 function Game() {
     var stage,
         background,
@@ -189,20 +200,22 @@ function Game() {
 
          stage = new Kinetic.Stage({
              container: 'game-container',
-             width: 400,
+             width: 600,
              height: 600
          });
 
         bulletLayer = new Kinetic.Layer();
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
-
+        uiDisplay = new Kinetic.Layer();
 
         this.ship = new Ship(this.textures.images, 175, 535);
         this.enemy = new Enemy(this.textures.images, 175, 20);
         background = new Background(this.textures.images);
+        uiBackground = new UIDisplayBackground(this.textures.images);
 
         backlayer.add(background.sprite);
+        uiDisplay.add(uiBackground.sprite);
         shipLayer.add(this.ship.sprite);
         shipLayer.add(this.enemy.sprite);
 
@@ -212,6 +225,7 @@ function Game() {
         }
 
         stage.add(backlayer);
+        stage.add(uiDisplay);
         stage.add(shipLayer);
         stage.add(bulletLayer);
     };
@@ -228,6 +242,10 @@ function Game() {
     this.moveship = function () {
         this.ship.move();
         shipLayer.draw();
+    };
+
+    this.drawUiDisplay = function () {
+        uiDisplay.draw();
     };
 
     this.moveenemy = function () {
@@ -251,6 +269,7 @@ function Game() {
 
 function animate() {
     game.moveBackground();
+    game.drawUiDisplay();
     game.moveship();
     game.moveenemy();
     window.requestAnimationFrame(animate);
