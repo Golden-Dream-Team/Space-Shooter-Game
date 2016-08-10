@@ -284,6 +284,8 @@ function Game() {
         uiDisplay = new UIDisplay(this.textures.images);
 
         setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
+        decreaseShipHP(game.textures.images, shipHP);
+        decreaseEnemyHP(game.textures.images, enemyHP);
 
         backlayer.add(background.sprite);
         shipLayer.add(this.ship.sprite);
