@@ -98,40 +98,36 @@ function Pool(maxSize) {
     };
 }
 
-function Ship() {
+function Background(images) {
+  this.sprite = new Kinetic.Image({
+      image: images.bg,
+      x: 0,
+      y: -9800,
+      width: 400,
+      height: 10527
+  });
+}
+
+function Ship(images, x, y) {
     this.speed = 3;
     this.bulletPool = new Pool(30);
     this.bulletPool.init();
-
     var fireRate = 15;
     var counter = 0;
-
     this.collidableWith = "redWpn";
     this.type = "ship";
-
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
-
-    //TODO: Draw ( should be remade )
-    // this.draw = function() {
-    // 		this.context.drawImage(imageRepository.ship, this.x, this.y);
-    // 	};
-
-    // TODO:Ship should not have init ( draw makes this )
-    // this.init = function (images, x, y) {
-    //     // Defualt variables
-    //     this.sprite = new Kinetic.Image({
-    //         image: images.ship,
-    //         x: x,//175
-    //         y: y,//520
-    //         width: 50,
-    //         height: 50
-    //     });
-    //     this.alive = true;
-    //     this.isColliding = false;
-    // };
+    this.hitPoints = 10;
+    this.sprite = new Kinetic.Image({
+        image: images.ship,
+        x: x,//175
+        y: y,//520
+        width: 50,
+        height: 50
+    });
 
     this.move = function () {
         if (this.right && this.sprite.getX() < 340) {
@@ -149,45 +145,27 @@ function Ship() {
     };
 
     this.fire = function () {
-        game.shipPool.get(this.x + 6, this.y, 3);
+        this.bulletPool.get(this.x + 6, this.y, 3);
     };
 }
 
-function Enemy() {
-    //var percentFire = 0.01;
-    var chance = 0;
+function Enemy(images, x, y) {
     this.speed = 3;
-    //this.alive = false;
-
     this.bulletPool = new Pool(30);
+    this.bulletPool.init();
     this.collidableWith = "blueWpn";
-
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
-
-    //this.type = "enemy";
-
-    //TODO: Draw
-    // this.draw = function() {
-    // 		this.context.drawImage(imageRepository.ship, this.x, this.y);
-    // 	};
-
-    // TODO:Enemy should not have init ( draw makes it )
-    // this.init = function (images, x, y) {
-    //     // Defualt variables
-    //     this.sprite = new Kinetic.Image({
-    //         image: images.enemy,
-    //         x: x,
-    //         y: y,
-    //         width: 50,
-    //         height: 50
-    //     });
-    //     this.alive = true;
-    //     this.isColliding = false;
-    //     //this.bulletPool.init("blueWpn");
-    // };
+    this.hitPoints = 10;
+    this.sprite = new Kinetic.Image({
+        image: images.enemy,
+        x: x,
+        y: y,
+        width: 50,
+        height: 50
+        });
 
     this.move = function () {
         if (this.right && this.sprite.getX() < 340) {
@@ -208,7 +186,7 @@ function Enemy() {
      * Fires a bullet
      */
     this.fire = function () {
-        game.enemyPool.get(this.x + this.width / 2, this.y + this.height, -2.5);
+        this.bulletPool.get(this.x + this.width / 2, this.y + this.height, -2.5);
     };
 
     /*
@@ -228,104 +206,90 @@ function Enemy() {
 
 // TODO: Should intergrate imagePepository and change the rources of init and draw images ( I have retup the image repo for kinetic, I think )
 
-// var imageRepository = function() {
-// 	// Define images
-// 	this.background = new Kinetic.Layer();
-// 	this.ship = new Kinetic.Layer();
-// 	this.enemy = new Kinetic.Layer();
-// 	this.blueWpn = new Kinetic.Layer();
-// 	this.redWpn = new Kinetic.Layer();
-// 	// Ensure all images have loaded before starting the game
-// 	var numImages = 5;
-// 	var numLoaded = 0;
-// 	function imageLoaded() {
-// 		numLoaded++;
-// 		if (numLoaded === numImages) {
-// 			window.init();
-// 		}
-// 	}
-// 	this.background.onload = function() {
-// 		imageLoaded();
-// 	}
-// 	this.spaceship.onload = function() {
-// 		imageLoaded();
-// 	}
-// 	this.enemy.onload = function() {
-// 		imageLoaded();
-// 	}
-//     this.blueWpn.onload = function() {
-// 		imageLoaded();
-// 	}
-//     this.redWpn.onload = function() {
-// 		imageLoaded();
-// 	}
-// 	// Set images src
-// 	this.background.src = "Resources/starBackground.png";
-// 	this.ship.src = "'Resources/ship.png";
-// 	this.enemy.src = "Resources/player2.png";
-// 	this.blueWpn.src = "Resources/blueWeapon.png";
-// 	this.redWpn.src = "Resources/redWeapon.png";
+function imageRepository() {
+	// this.background = new Kinetic.Layer();
+	// this.ship = new Kinetic.Layer();
+	// this.enemy = new Kinetic.Layer();
+	// this.blueWpn = new Kinetic.Layer();
+	// this.redWpn = new Kinetic.Layer();
+  this.images = {}; // texture container
+  var  sources = {
+          bg: 'Resources/starBackground.png',
+          ship: 'Resources/ship.png',
+          enemy: 'Resources/player2.png',
+          blueWpn: 'Resources/blueWeapon.png',
+          redWpn: 'Resources/redWeapon.png'
+      }
+	// Ensure all images have loaded before starting the game
 
-// }
+  var numImages = Object.keys(sources).length;
+
+  for (var src in sources) {
+      this.images[src] = new Image();
+     this.images[src].src = sources[src];
+  }
+  //
+	// var numImages = 5;
+	// var numLoaded = 0;
+  //
+	// function imageLoaded() {
+	// 	numLoaded++;
+	// 	if (numLoaded === numImages) {
+	// 		window.init();
+	// 	}
+	// }
+	// this.background.onload = function() {
+	// 	imageLoaded();
+	// }
+	// this.spaceship.onload = function() {
+	// 	imageLoaded();
+	// }
+	// this.enemy.onload = function() {
+	// 	imageLoaded();
+	// }
+  //   this.blueWpn.onload = function() {
+	// 	imageLoaded();
+	// }
+  //   this.redWpn.onload = function() {
+	// 	imageLoaded();
+	// }
+	// // Set images src
+	// this.background.src = "Resources/starBackground.png";
+	// this.ship.src = "'Resources/ship.png";
+	// this.enemy.src = "Resources/player2.png";
+	// this.blueWpn.src = "Resources/blueWeapon.png";
+	// this.redWpn.src = "Resources/redWeapon.png";
+
+}
 
 function Game() {
-
-    var images = {}, // texture container
-        sources = {
-            bg: 'Resources/starBackground.png',
-            ship: 'Resources/ship.png',
-            enemy: 'Resources/player2.png',
-            blueWpn: 'Resources/blueWeapon.png',
-            redWpn: 'Resources/redWeapon.png'
-        },
-        background,
-        stage,
-        shipLayer,
-        backlayer,
-        enemyLayer,
-        enemyPool = new Pool(50);
-    enemyPool.init("bullet");
-    var shipPool = new Pool(30);
-    shipPool.init("bullet");
-    this.ship = new Ship();
-    this.enemy = new Enemy();
+    this.ship = undefined;
+    this.enemy = undefined;
+    this.textures = undefined;
+    var background;
 
     this.init = function () {
-        // var numImages = Object.keys(sources).length;
 
-        // for (var src in sources) {
+         this.textures = new imageRepository();
 
-        //     images[src] = new Image();
-        //     images[src].src = sources[src];
-        // }
-
-        // stage = new Kinetic.Stage({
-        //     container: 'game-container',
-        //     width: 400,
-        //     height: 600
-        // });
+         stage = new Kinetic.Stage({
+             container: 'game-container',
+             width: 400,
+             height: 600
+         });
 
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
 
-        this.ship.init(images, 175, 535);
-        this.enemy.init(images, 175, 20);
+        this.ship = new Ship(this.textures.images, 175, 535);
+        this.enemy = new Enemy(this.textures.images, 175, 20);
+        background = new Background(this.textures.images);
 
-        // TODO : ImageRepository should make all of these initiations ( makes "Game" more clear )
-
-        background = new Kinetic.Image({
-            image: images.bg,
-            x: 0,
-            y: -9800,
-            width: 400,
-            height: 10527
-        });
-        backlayer.add(background);
+        backlayer.add(background.sprite);
         shipLayer.add(this.ship.sprite);
         shipLayer.add(this.enemy.sprite);
         stage.add(backlayer);
         stage.add(shipLayer);
-        stage.draw();
     };
 
     this.getImgs = function () {
@@ -333,10 +297,10 @@ function Game() {
     }
 
     this.moveBackground = function () {
-        if (background.getY() === 0) {
-            background.setY(-9600);
+        if (background.sprite.getY() === 0) {
+            background.sprite.setY(-9600);
         }
-        background.setY(background.getY() + 1);
+        background.sprite.setY(background.sprite.getY() + 1);
         backlayer.draw();
     };
 
