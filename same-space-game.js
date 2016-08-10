@@ -180,7 +180,7 @@ function Enemy(images, x, y) {
     };
 
     this.fire = function () {
-        this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() + 15);
+        this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() + 60);
     };
 }
 
@@ -208,6 +208,10 @@ function setupUILayer(uiLayer, images, ship, enemy) {
 
     this.shipHealth = game.ship.hitPoints;
     this.enemyHealth = game.enemy.hitPoints;
+    uiLayer.add(uiDisplay.sprite);
+
+    var shipHp = [];
+    var enemyHp = [];
 
     var gameTitle = new Kinetic.Text({
         x: 410,
@@ -240,14 +244,42 @@ function setupUILayer(uiLayer, images, ship, enemy) {
         fill: 'white'
     });
 
-    // Can be done with Kinetic.Image of a health bar and x will vary
-    // Function to cut WIDTH of image when ship is shot
+    for (i = 0; i < 10; i += 1) {
+        enemyHp[i] = new Kinetic.Image({
+            image: images.healthBlue,
+            x: 420 + (i * 16),
+            y: 50,
+            width: 16,
+            height: 20,
+        });
+        uiLayer.add(enemyHp[i]);
+    }
 
-    uiLayer.add(uiDisplay.sprite);
+    for (i = 0; i < 10; i += 1) {
+        shipHp[i] = new Kinetic.Image({
+            image: images.healthGreen,
+            x: 420 + (i * 16),
+            y: 525,
+            width: 16,
+            height: 20,
+            });
+        uiLayer.add(shipHp[i]);
+    }
 
     uiLayer.add(gameTitle);
     uiLayer.add(firstPlayerControls);
     uiLayer.add(secondPlayerControls);
+    uiLayer.draw();
+
+    this.decreaseEnemyHp = function() {
+      enemyHp.pop().destroy();
+      this.enemyHealth -= 1;
+    };
+
+    this.decreaseShipHp = function() {
+      shipHp.pop().destroy();
+      this.shipHealth -= 1;
+    };
 
 }
 
@@ -260,8 +292,7 @@ function Game() {
         backlayer,
         bulletLayer,
         uiDisplayLayer,
-        shipHP = 10,
-        enemyHP = 10;
+        uiContainer;
 
     this.init = function () {
 
@@ -283,9 +314,7 @@ function Game() {
         background = new Background(this.textures.images);
         uiDisplay = new UIDisplay(this.textures.images);
 
-        setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
-        decreaseShipHP(game.textures.images, shipHP);
-        decreaseEnemyHP(game.textures.images, enemyHP);
+        uiContainer = new setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
 
         backlayer.add(background.sprite);
         shipLayer.add(this.ship.sprite);
@@ -302,37 +331,6 @@ function Game() {
         stage.add(bulletLayer);
     };
 
-    function decreaseEnemyHP(images, enemyHP) {
-        for (i = 0; i < enemyHP; i += 1) {
-
-            var secondPlayerHealth = new Kinetic.Image({
-                image: images.healthBlue,
-                x: 420 + (i * 16),
-                y: 50,
-                width: 16,
-                height: 20,
-            });
-
-            uiDisplayLayer.add(secondPlayerHealth);
-        }
-    }
-
-    function decreaseShipHP(images, shipHP) {
-        for (i = 0; i < shipHP; i += 1) {
-
-            var firstPlayerHealth = new Kinetic.Image({
-                image: images.healthGreen,
-                x: 420 + (i * 16),
-                y: 525,
-                width: 16,
-                height: 20,
-            });
-
-            uiDisplayLayer.add(firstPlayerHealth);
-        }
-    }
-
-
     this.moveBackground = function () {
         if (background.sprite.getY() === 0) {
             background.sprite.setY(-9600);
@@ -348,25 +346,14 @@ function Game() {
     };
 
     this.drawUiDisplay = function () {
-        // Must clear after every hit
-        if (game.ship.hitPoints !== shipHP) {
-            shipHP = game.ship.hitPoints;
-            decreaseShipHP(game.textures.images, shipHP);
-            uiDisplayLayer.draw();
-        }
-        if (game.enemy.hitPoints !== enemyHP) {
-            enemyHP = game.enemy.hitPoints;
-            //console.log(enemyHP);
-            decreaseEnemyHP(game.textures.images, enemyHP);
-            uiDisplayLayer.draw();
-        }
-        else {
-            uiDisplayLayer.draw();
-        }
-        // if(detectCollision()){
-        //     setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
-        //     uiDisplayLayer.draw();
-        // }
+      if (uiContainer.enemyHealth > this.enemy.hitPoints) {
+        uiContainer.decreaseEnemyHp();
+        uiDisplayLayer.draw();
+      }
+      if (uiContainer.shipHealth > this.ship.hitPoints) {
+        uiContainer.decreaseShipHp();
+        uiDisplayLayer.draw();
+      }
     };
 
     this.moveenemy = function () {
