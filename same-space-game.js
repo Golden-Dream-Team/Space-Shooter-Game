@@ -34,10 +34,18 @@ function Bullet(image, x, y, direction) {
     this.spawn = function(x, y) {
       this.sprite.setX(x);
       this.sprite.setY(y);
+      //this.alive = true;
     };
 
     this.move = function () {
-      this.sprite.setY(this.sprite.getY() + (speed * direction));
+      if (this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20) {
+        this.sprite.setX(-20);
+        this.sprite.setY(-20);
+        console.log("asdasd");
+      }
+      else {
+        this.sprite.setY(this.sprite.getY() + (speed * direction));
+      }
     };
 }
 
@@ -45,11 +53,6 @@ function Pool(maxSize, image, direction) {
     var size = maxSize; // Max bullets allowed in the pool
     this.pool = [];
 
-    // TODO : Pool init should take second parameter to see who is using it (enemy-redWpn, ship-blueWpn)
-
-    /*
-     * Populates the pool array with the given object
-     */
     this.init = function () {
         var bullet,
             enemy,
@@ -62,30 +65,32 @@ function Pool(maxSize, image, direction) {
         };
 
     this.get = function (x, y) {
-        if (!this.pool[size - 1].alive) {
-              this.pool[size - 1].spawn(x, y);
-              this.pool.unshift(this.pool.pop());
-          }
-     };
+            if (!this.pool[size - 1].alive) {
+                  this.pool[size - 1].spawn(x, y);
+                  this.pool.unshift(this.pool.pop());
+              }
+    };
 
             /*
              * Draws any in use Bullets. If a bullet goes off the screen,-----
              * clears it and pushes it to the front of the array.
              */
     this.animate = function () {
-        for (var i = 0; i < size; i++) {
-            // Only draw until we find a bullet that is not alive
-            if (this.pool[i].alive) {
-                  this.pool.push((this.pool.splice(i, 1))[0]);
-                  this.pool[i].move();
-              }
-           else {
-              this.pool[i].sprite.SetX = -20;
-              this.pool[i].sprite.SetY = -20;
+      for (var j = 0; j < size; j++) {
+        this.pool[j].move();
+      }
+       for (var i = 0; i < size; i++) {
+           // Only draw until we find a bullet that is not alive
+          if (this.pool[i].alive) {
+              this.pool.push((this.pool.splice(i, 1))[0]);
             }
-              break;
-            }
-        };
+          else {
+             this.pool[i].sprite.SetX = -20;
+             this.pool[i].sprite.SetY = -20;
+           }
+             break;
+           }
+         };
     }
 
 function Ship(images, x, y) {
@@ -110,6 +115,8 @@ function Ship(images, x, y) {
     });
 
     this.move = function () {
+        this.bulletPool.animate();
+
         if (this.right && this.sprite.getX() < 340) {
             this.sprite.setX(this.sprite.getX() + this.speed);
         }
@@ -148,6 +155,8 @@ function Enemy(images, x, y) {
         });
 
     this.move = function () {
+        this.bulletPool.animate();
+
         if (this.right && this.sprite.getX() < 340) {
             this.sprite.setX(this.sprite.getX() + this.speed);
         }
@@ -297,7 +306,7 @@ document.body.onkeydown = function (e) {
     } else if (keyCode === 39) { //rightKey
         game.enemy.right = true;
         game.enemy.left = false;
-    } else if (keyCode === 17) { //rightCtrl
+    } else if (keyCode === 45) { //numpadIns
         game.enemy.fire();
     } else if (keyCode === 87) { //w
         game.ship.up = true;
