@@ -13,7 +13,6 @@ function imageRepository() {
         healthGreen: 'Resources/greenHealthBar.png'
 
     };
-    // Ensure all images have loaded before starting the game
 
     var numImages = Object.keys(sources).length;
 
@@ -25,7 +24,7 @@ function imageRepository() {
 
 function Bullet(image, x, y, direction) {
     var speed = 4;
-    this.alive = false; // Is true if the bullet is currently in use
+    this.alive = false;
     this.sprite = new Kinetic.Image({
         image: image,
         x: x,
@@ -37,7 +36,6 @@ function Bullet(image, x, y, direction) {
     this.spawn = function (x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
-        //this.alive = true;
     };
 
     this.move = function () {
@@ -73,16 +71,11 @@ function Pool(maxSize, image, direction) {
         }
     };
 
-    /*
-     * Draws any in use Bullets. If a bullet goes off the screen,-----
-     * clears it and pushes it to the front of the array.
-     */
     this.animate = function () {
         for (var j = 0; j < size; j++) {
             this.pool[j].move();
         }
         for (var i = 0; i < size; i++) {
-            // Only draw until we find a bullet that is not alive
             if (this.pool[i].alive) {
                 this.pool.push((this.pool.splice(i, 1))[0]);
             }
@@ -228,7 +221,7 @@ function setupUILayer(uiLayer, images) {
         align: 'center',
         fontFamily: 'Capture it',
         fill: 'white'
-    }); 
+    });
 
 // Can be done with Kinetic.Image of a health bar and x will vary
 // Function to cut WIDTH of image when ship is shot
@@ -245,11 +238,11 @@ function setupUILayer(uiLayer, images) {
                 width: 16,
                 height: 20,
             });
-        
+
             uiLayer.add(firstPlayerHealth);
         }
 
-        for (var i = 0; i < 10; i+=1) {
+        for ( i = 0; i < 10; i+=1) {
 
             var secondPlayerHealth = new Kinetic.Image({
                 image: images.healthBlue,
@@ -258,15 +251,15 @@ function setupUILayer(uiLayer, images) {
                 width: 16,
                 height: 20,
             });
-        
+
             uiLayer.add(secondPlayerHealth);
         }
-    
+
 
     uiLayer.add(gameTitle);
     uiLayer.add(firstPlayerControls);
     uiLayer.add(secondPlayerControls);
-    
+
 }
 
 function Game() {
