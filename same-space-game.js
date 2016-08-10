@@ -39,6 +39,18 @@ function Bullet(image, x, y, direction) {
     };
 
     this.move = function () {
+        if (detectCollision(this.sprite, game.enemy.sprite)) {
+          game.enemy.hitPoints -= 1;
+          this.sprite.setX(-20);
+          this.sprite.setY(-20);
+        }
+
+        if (detectCollision(this.sprite, game.ship.sprite)) {
+          game.ship.hitPoints -= 1;
+          this.sprite.setX(-20);
+          this.sprite.setY(-20);
+        }
+
         if (this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20) {
             this.sprite.setX(-20);
             this.sprite.setY(-20);
@@ -353,10 +365,10 @@ function animate() {
 
 //pass Kinetic.Image type objects
 function detectCollision(objectA, objectB) {
-    return (objectA.x < objectB.x + objectB.width &&
-        objectA.x + objectA.width > objectB.x &&
-        objectA.y < objectB.y + objectB.height &&
-        objectA.height + objectA.y > objectB.y);
+    return (objectA.getX() < objectB.getX() + objectB.getWidth() &&
+        objectA.getX() + objectA.getWidth() > objectB.getX() &&
+        objectA.getY() < objectB.getY() + objectB.getHeight() &&
+        objectA.getHeight() + objectA.getY() > objectB.getY());
 }
 
 document.body.onkeydown = function (e) {
