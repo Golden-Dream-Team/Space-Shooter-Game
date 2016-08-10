@@ -1,16 +1,13 @@
 var game = new Game(); //Primary game instance
 
 
-function Bullet(object) {
-    var self = object,
-        type = "bullet",
+function Bullet() {
+    var type = "bullet",
         isColliding = false;
     this.alive = false; // Is true if the bullet is currently in use
 
-    /*
-     * Sets the bullet values
-    */
 
+    // Spawn
     this.spawn = function (x, y, speed) {
         this.x = x;
         this.y = y;
@@ -18,27 +15,19 @@ function Bullet(object) {
         this.alive = true;
     };
 
+    //TODO: Draw
     // this.draw = function() {
-	// 	this.context.clearRect(this.x, this.y, this.width, this.height);
-	// 	this.y -= this.speed;
-	// 	if (this.y <= 0 - this.height) {
-	// 		return true;
-	// 	}
-	// 	else {
-	// 		this.context.drawImage(images.bullet, this.x, this.y);
-	// 	}
-	// };
+    // 	this.context.clearRect(this.x, this.y, this.width, this.height);
+    // 	this.y -= this.speed;
+    // 	if (this.y <= 0 - this.height) {
+    // 		return true;
+    // 	}
+    // 	else {
+    // 		this.context.drawImage(images.bullet, this.x, this.y);
+    // 	}
+    // };
 
-    this.init = function (images, x, y) {
-        this.sprite = new Kinetic.Image({
-            image: images.image.blueWpn,
-            x: this.x,
-            y: this.y,
-            width: 10,
-            height: 10
-        });
-    }
-
+    // Clear
     this.clear = function () {
         this.x = 0;
         this.y = 0;
@@ -52,23 +41,11 @@ function Pool(maxSize) {
     var size = maxSize; // Max bullets allowed in the pool
     var pool = [];
 
-    this.spawn = function (x, y, speed) {
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
-        this.alive = true;
-    };
-    this.getPool = function () {
-        var obj = [];
-        for (var i = 0; i < size; i++) {
-            if (pool[i].alive) {
-                obj.push(pool[i]);
-            }
-        }
-        return obj;
-    };
+    // TODO : Pool init should take second parameter to see who is using it (enemy-redWpn, ship-blueWpn)
 
-
+    /*
+     * Populates the pool array with the given object
+     */
     this.init = function (object) {
         var bullet,
             enemy,
@@ -81,13 +58,6 @@ function Pool(maxSize) {
                 pool[i] = bullet;
             }
         }
-        else if (object == "enemy") {
-            for (i = 0; i < size; i += 1) {
-                enemy = new Enemy();
-                enemy.init(images.enemy, 0, 0);
-                pool[i] = enemy;
-            }
-        }
         else if (object == "redWpn") {
             for (i = 0; i < size; i += 1) {
                 enemyBullet = new Bullet("blueWpn");
@@ -97,10 +67,6 @@ function Pool(maxSize) {
             }
         }
     };
-
-    /*
-     * Populates the pool array with the given object
-     */
 
     /*
      * Grabs the last item in the list and initializes it and
@@ -118,45 +84,54 @@ function Pool(maxSize) {
      * clears it and pushes it to the front of the array.
      */
     this.animate = function () {
-		for (var i = 0; i < size; i++) {
-			// Only draw until we find a bullet that is not alive
-			if (pool[i].alive) {
-				if (pool[i].draw()) {
-					pool[i].clear();
-					pool.push((pool.splice(i,1))[0]);
-				}
-			}
-			else
-				break;
-		}
+        for (var i = 0; i < size; i++) {
+            // Only draw until we find a bullet that is not alive
+            if (pool[i].alive) {
+                if (pool[i].draw()) {
+                    pool[i].clear();
+                    pool.push((pool.splice(i, 1))[0]);
+                }
+            }
+            else
+                break;
+        }
     };
 }
 
 function Ship() {
     this.speed = 3;
     this.bulletPool = new Pool(30);
+    this.bulletPool.init();
+
     var fireRate = 15;
     var counter = 0;
+
     this.collidableWith = "redWpn";
     this.type = "ship";
+
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
 
-    this.init = function (images, x, y) {
-        // Defualt variables
-        this.sprite = new Kinetic.Image({
-            image: images.ship,
-            x: x,//175
-            y: y,//520
-            width: 50,
-            height: 50
-        });
-        this.alive = true;
-        this.isColliding = false;
-        this.bulletPool.init("bullet");
-    };
+    //TODO: Draw ( should be remade )
+    // this.draw = function() {
+    // 		this.context.drawImage(imageRepository.ship, this.x, this.y);
+    // 	};
+
+    // TODO:Ship should not have init ( draw makes this )
+    // this.init = function (images, x, y) {
+    //     // Defualt variables
+    //     this.sprite = new Kinetic.Image({
+    //         image: images.ship,
+    //         x: x,//175
+    //         y: y,//520
+    //         width: 50,
+    //         height: 50
+    //     });
+    //     this.alive = true;
+    //     this.isColliding = false;
+    // };
 
     this.move = function () {
         if (this.right && this.sprite.getX() < 340) {
@@ -182,31 +157,37 @@ function Enemy() {
     //var percentFire = 0.01;
     var chance = 0;
     this.speed = 3;
-    this.alive = false;
+    //this.alive = false;
+
     this.bulletPool = new Pool(30);
     this.collidableWith = "blueWpn";
+
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
-    this.type = "enemy";
 
-    /*
-     * Move the enemy
-     */
-    this.init = function (images, x, y) {
-        // Defualt variables
-        this.sprite = new Kinetic.Image({
-            image: images.enemy,
-            x: x,
-            y: y,
-            width: 50,
-            height: 50
-        });
-        this.alive = true;
-        this.isColliding = false;
-        //this.bulletPool.init("blueWpn");
-    };
+    //this.type = "enemy";
+
+    //TODO: Draw
+    // this.draw = function() {
+    // 		this.context.drawImage(imageRepository.ship, this.x, this.y);
+    // 	};
+
+    // TODO:Enemy should not have init ( draw makes it )
+    // this.init = function (images, x, y) {
+    //     // Defualt variables
+    //     this.sprite = new Kinetic.Image({
+    //         image: images.enemy,
+    //         x: x,
+    //         y: y,
+    //         width: 50,
+    //         height: 50
+    //     });
+    //     this.alive = true;
+    //     this.isColliding = false;
+    //     //this.bulletPool.init("blueWpn");
+    // };
 
     this.move = function () {
         if (this.right && this.sprite.getX() < 340) {
@@ -233,16 +214,19 @@ function Enemy() {
     /*
      * Resets the enemy values
      */
-    this.clear = function () {
-        this.x = 0;
-        this.y = 0;
-        this.speed = 0;
-        this.speedX = 0;
-        this.speedY = 0;
-        this.alive = false;
-        this.isColliding = false;
-    };
+    //TODO: Not sure if this should stay with one enemy ( probably not )
+    // this.clear = function () {
+    //     this.x = 0;
+    //     this.y = 0;
+    //     this.speed = 0;
+    //     this.speedX = 0;
+    //     this.speedY = 0;
+    //     this.alive = false;
+    //     this.isColliding = false;
+    // };
 }
+
+// TODO: Should intergrate imagePepository and change the rources of init and draw images ( I have retup the image repo for kinetic, I think )
 
 // var imageRepository = function() {
 // 	// Define images
@@ -281,7 +265,7 @@ function Enemy() {
 // 	this.enemy.src = "Resources/player2.png";
 // 	this.blueWpn.src = "Resources/blueWeapon.png";
 // 	this.redWpn.src = "Resources/redWeapon.png";
-    
+
 // }
 
 function Game() {
@@ -307,19 +291,19 @@ function Game() {
     this.enemy = new Enemy();
 
     this.init = function () {
-        var numImages = Object.keys(sources).length;
+        // var numImages = Object.keys(sources).length;
 
-        for (var src in sources) {
+        // for (var src in sources) {
 
-            images[src] = new Image();
-            images[src].src = sources[src];
-        }
+        //     images[src] = new Image();
+        //     images[src].src = sources[src];
+        // }
 
-        stage = new Kinetic.Stage({
-            container: 'game-container',
-            width: 400,
-            height: 600
-        });
+        // stage = new Kinetic.Stage({
+        //     container: 'game-container',
+        //     width: 400,
+        //     height: 600
+        // });
 
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
@@ -327,6 +311,7 @@ function Game() {
         this.ship.init(images, 175, 535);
         this.enemy.init(images, 175, 20);
 
+        // TODO : ImageRepository should make all of these initiations ( makes "Game" more clear )
 
         background = new Kinetic.Image({
             image: images.bg,
@@ -344,7 +329,7 @@ function Game() {
     };
 
     this.getImgs = function () {
-      return images;
+        return images;
     }
 
     this.moveBackground = function () {
@@ -410,13 +395,13 @@ document.body.onkeydown = function (e) {
         game.enemy.left = false;
     } else if (keyCode === 17) { //rightCtrl
         game.enemy.fire();
-    }else if (keyCode === 87) { //w
+    } else if (keyCode === 87) { //w
         game.ship.up = true;
         game.ship.down = false;
-    }else if (keyCode === 65) { //a
+    } else if (keyCode === 65) { //a
         game.ship.left = true;
         game.ship.right = false;
-    }else if (keyCode === 83) { //s
+    } else if (keyCode === 83) { //s
         game.ship.down = true;
         game.ship.up = false;
     } else if (keyCode === 68) { //d
