@@ -232,46 +232,37 @@ function setupUILayer(uiLayer, images) {
 
 // Can be done with Kinetic.Image of a health bar and x will vary
 // Function to cut WIDTH of image when ship is shot
-        var firstPlHealth = [];
-        var secondPlHealth = [];
-
-        var imageObj = new Image();
 
 
-         imageObj.onload = function() {
-             for (var i = 0; i < 10; i+=1) {
+        uiLayer.add(uiDisplay.sprite);
 
-                 var firstPlayerHealth = new Kinetic.Image({
-                     image: images.healthBlue,
-                     x: 420 + (i*16),
-                     y: 50,
-                     width: 16,
-                     height: 20,
-                 });
-                
-                 uiLayer.add(firstPlayerHealth);
-                 uiLayer.draw();
-             }
-         }
+            for (var i = 0; i < 10; i+=1) {
 
-    // for (var i = 0; i < 10; i++) {
-    //         var xValue = 420;  
-
-    //         var secondPlayerHealth = new Kinetic.Image({
-    //         image: images.healthGreen,
-    //         x: xValue,
-    //         y: 525,
-    //         width: 16,
-    //         height: 20,
-    //     });
-
-    //     xValue += 16;
-    //     secondPlHealth.push(secondPlayerHealth);
+            var firstPlayerHealth = new Kinetic.Image({
+                image: images.healthGreen,
+                x: 420 + (i*16),
+                y: 525,
+                width: 16,
+                height: 20,
+            });
         
-    //     uiLayer.add(secondPlHealth[i]);
-    // }
+            uiLayer.add(firstPlayerHealth);
+        }
 
-    uiLayer.add(uiDisplay.sprite);
+        for (var i = 0; i < 10; i+=1) {
+
+            var secondPlayerHealth = new Kinetic.Image({
+                image: images.healthBlue,
+                x: 420 + (i*16),
+                y: 50,
+                width: 16,
+                height: 20,
+            });
+        
+            uiLayer.add(secondPlayerHealth);
+        }
+    
+
     uiLayer.add(gameTitle);
     uiLayer.add(firstPlayerControls);
     uiLayer.add(secondPlayerControls);
