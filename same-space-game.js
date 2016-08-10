@@ -41,7 +41,6 @@ function Bullet(image, x, y, direction) {
       if (this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20) {
         this.sprite.setX(-20);
         this.sprite.setY(-20);
-        console.log("asdasd");
       }
       else {
         this.sprite.setY(this.sprite.getY() + (speed * direction));
@@ -186,7 +185,7 @@ function Background(images) {
   });
 }
 
-function UIDisplayBackground(images) {
+function UIDisplay(images) {
     this.sprite = new Kinetic.Image({
         image: images.uiDisplay,
         x: 400,
@@ -194,6 +193,21 @@ function UIDisplayBackground(images) {
         width: 200,
         height: 600
     });
+}
+
+function setupUILayer(uiLayer) {
+
+    var text = new Kinetic.Text({
+        x: 500,
+        y: 300,
+        text: 'Test game',
+        fontSize: 30,
+        fontFamily: 'Arial',
+        fill: 'white'
+    });
+
+    uiLayer.add(uiDisplay.sprite);
+    uiLayer.add(text);
 }
 
 function Game() {
@@ -216,15 +230,16 @@ function Game() {
         bulletLayer = new Kinetic.Layer();
         shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
-        uiDisplay = new Kinetic.Layer();
+        uiDisplayLayer = new Kinetic.Layer();
 
         this.ship = new Ship(this.textures.images, 175, 535);
         this.enemy = new Enemy(this.textures.images, 175, 20);
         background = new Background(this.textures.images);
-        uiBackground = new UIDisplayBackground(this.textures.images);
+        uiDisplay = new UIDisplay(this.textures.images);
+
+        setupUILayer(uiDisplayLayer);
 
         backlayer.add(background.sprite);
-        uiDisplay.add(uiBackground.sprite);
         shipLayer.add(this.ship.sprite);
         shipLayer.add(this.enemy.sprite);
 
@@ -234,7 +249,7 @@ function Game() {
         }
 
         stage.add(backlayer);
-        stage.add(uiDisplay);
+        stage.add(uiDisplayLayer);
         stage.add(shipLayer);
         stage.add(bulletLayer);
     };
@@ -254,7 +269,7 @@ function Game() {
     };
 
     this.drawUiDisplay = function () {
-        uiDisplay.draw();
+        uiDisplayLayer.draw();
     };
 
     this.moveenemy = function () {
