@@ -622,10 +622,6 @@ document.body.onkeydown = function (e) {
     } else if (keyCode === 39) { //RightKey
         game.enemy.right = true;
         game.enemy.left = false;
-    } else if (keyCode === 98) { //NumPad 2
-        game.enemy.fire();
-    } else if (keyCode === 99) { //NumPad 3
-        game.enemy.firePlasma();
     } else if (keyCode === 87) { // w
         game.ship.up = true;
         game.ship.down = false;
@@ -638,11 +634,7 @@ document.body.onkeydown = function (e) {
     } else if (keyCode === 68) { // d
         game.ship.right = true;
         game.ship.left = false;
-    } else if (keyCode === 32) { // space
-        game.ship.fire();
-    } else if (keyCode === 77) { // m
-        game.ship.firePlasma();
-    }
+     }
 };
 document.body.onkeyup = function (e) {
     var keyCode = e.keyCode;
@@ -662,8 +654,17 @@ document.body.onkeyup = function (e) {
         game.ship.down = false;
     } else if (keyCode === 68) { // d
         game.ship.right = false;
+    } else if (keyCode === 32) { // space
+      game.ship.fire();
+    } else if (keyCode === 77) { // m
+      game.ship.firePlasma();
+    } else if (keyCode === 98) { //NumPad 2
+        game.enemy.fire();
+    } else if (keyCode === 99) { //NumPad 3
+        game.enemy.firePlasma();
     }
 };
+
 var restart = document.getElementById("restart");
 restart.onclick = function (e) {
     if (!bulletsFlag) {
