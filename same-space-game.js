@@ -367,7 +367,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
         firstPlayerControls = new Kinetic.Text({
             x: 410,
             y: 360,
-            text: 'Player 1\nControls:\n\n    Move: W A S D\nShoot: Space',
+            text: 'Player 1\nControls:\n\n    Move: W A S D\nShoot: Space M',
             fontSize: 20,
             align: 'center',
             fontFamily: 'Capture it',
@@ -377,7 +377,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
         secondPlayerControls = new Kinetic.Text({
             x: 410,
             y: 130,
-            text: 'Player 2\nControls:\n\n    Move: ↑ ← ↓ →\nShoot: 0',
+            text: 'Player 2\nControls:\n\n    Move: ↑ ← ↓ →\nShoot: 2 3',
             fontSize: 20,
             align: 'center',
             fontFamily: 'Capture it',
@@ -576,7 +576,7 @@ function Game() {
             winnerPlayerText = new Kinetic.Text({
                 x: 100,
                 y: 300,
-                text: winnerPlayer + ' wins!',
+                text: winnerPlayer + ' wins !',
                 fontSize: 30,
                 align: 'center',
                 fontFamily: 'Capture it',
