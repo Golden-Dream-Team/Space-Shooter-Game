@@ -4,6 +4,7 @@ var mainTheme = document.getElementById('main-theme'),
     endGameTheme = document.getElementById('endgame-theme'),
     bulletSound = document.getElementById('bullet-sound'),
     winSound = document.getElementById('win-sound'),
+    plasmaSound = document.getElementById('plasma-sound'),
     bulletsFlag = true;
 
 bulletSound.volume = 0.2;
@@ -105,6 +106,10 @@ function Plasma(image, explosionImg, direction) {
     this.spawn = function(x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
+        if (bulletsFlag) {
+            plasmaSound.currentTime = 0;
+            plasmaSound.play();
+        }
     };
 
     this.explode = function() {
