@@ -389,6 +389,7 @@ function Game() {
     // Game over
     this.gameOver = function (winnerPlayer) {
         shipLayer.removeChildren();
+        bulletLayer.remove(this.ship.bulletPool);
 
         var gameOverText = new Kinetic.Text({
             x: 30,
