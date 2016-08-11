@@ -2,28 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <script src="kinetic-v5.1.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="Styles/styles.css">
-    <title>Space Shooter</title>
-    <style>
-        @font-face {
-            font-family: 'Capture it';
-            src: url('Fonts/Capture_it.ttf');
-        }
-    </style>
+	<meta charset="UTF-8">
+	<script src="kinetic-v5.1.0.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="Styles/styles.css">
+	<title>Space Shooter</title>
+	<style>
+		@font-face {
+			font-family: 'Capture it';
+			src: url('Fonts/Capture_it.ttf');
+		}
+	</style>
 </head>
 
 <body>
-    <section id="game-container"></section>
-    <div class="game-over" id="game-over">GAME OVER
-        <p><span onclick="game.restart()">Restart</span></p>
-    </div>
-    <audio id="main-theme" src="./sounds/main-theme.ogg" loop/>
-    <audio id="endgame-theme" src="./sounds/credits.ogg" loop/>
-    <audio id="bullet-sound" src="./sounds/blaster.mp3" />
-    <audio id="win-sound" src="./sounds/winner.mp3" />
-    <script src="same-space-game.js"></script>
+	<section id="game-container"></section>
+	<div class="game-over" id="game-over">
+		<p id="restart"></p>
+	</div>
+	<script src="same-space-game.js"></script>
 </body>
 
 </html>

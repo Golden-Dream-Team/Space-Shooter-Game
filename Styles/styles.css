@@ -6,6 +6,14 @@ html {
 	background-size: cover;
 }
 
+#restart {
+    display:inline-block;
+    width:200px;
+    height:200px;
+    position:absolute;
+    top:350px;
+    left:550px;
+}
 #game-container {
 	margin: auto;
 	display: block;
