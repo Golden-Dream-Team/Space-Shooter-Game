@@ -3,7 +3,8 @@ var game = new Game(); //Primary game instance
 var mainTheme = document.getElementById('main-theme'),
     endGameTheme = document.getElementById('endgame-theme'),
     bulletSound = document.getElementById('bullet-sound'),
-    winSound = document.getElementById('win-sound');
+    winSound = document.getElementById('win-sound'),
+    bulletsFlag = true;
 
 bulletSound.volume = 0.2;
 
@@ -184,8 +185,10 @@ function Pool(maxSize, image, direction) {
             this.pool[size - 1].spawn(x, y);
             this.pool.unshift(this.pool.pop());
 
-            bulletSound.currentTime = 0;
-            bulletSound.play();
+            if (bulletsFlag) {
+                bulletSound.currentTime = 0;
+                bulletSound.play();
+            }
         }
     };
 
@@ -407,6 +410,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
             mainTheme.currentTime = 0;
             winSound.play();
             endGameTheme.play();
+            bulletsFlag = false;
         }
     };
 
@@ -419,6 +423,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
             mainTheme.currentTime = 0;
             winSound.play();
             endGameTheme.play();
+            bulletsFlag = false;
         }
     };
 
@@ -529,6 +534,7 @@ function Game() {
         endGameTheme.currentTime = 0;
         mainTheme.currentTime = 0;
         mainTheme.play();
+        bulletsFlag = true;
 
         this.init();
     };
