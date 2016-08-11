@@ -11,6 +11,8 @@
 | Тодор Стайковски  |           Todor13                  | 
 
 
+# Link for YouTube preview video: https://www.youtube.com/watch?v=KZoiJipnpiQ
+
 #   JavaScript DOM & UI: Teamwork Assignment
 
 This document describes the teamwork assignment for Telerik Academy students in JavaScript UI & DOM course
