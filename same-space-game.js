@@ -674,7 +674,9 @@ window.requestAnimFrame = (function() {
         };
 })();
 
-window.onload = function() {
+document.getElementById('startUpContainer').onclick = function() {
+    this.style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
     game.init();
     game.start();
 };
