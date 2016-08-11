@@ -162,11 +162,12 @@ function Plasma(image, explosionImg, direction) {
             counter = 31;
         }
 
-        if (!this.exploded && this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20
-            || !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380) {
+        if (!this.exploded && this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20 ||
+         !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380 || !this.exploded && this.sprite.getY() > 580) {
             this.sprite.setX(600);
             this.sprite.setY(600);
             this.isInUse = false;
+            console.log("asd");
         } else {
             this.sprite.setY(this.sprite.getY() + (speed * direction));
             this.sprite.setX(this.sprite.getX() + 3 * Math.sin(this.sprite.getY() * 0.02));
