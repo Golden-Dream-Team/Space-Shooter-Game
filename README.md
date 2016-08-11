@@ -11,7 +11,7 @@
 | Тодор Стайковски  |           Todor13                  | 
 
 
-# Link for YouTube preview video: https://www.youtube.com/watch?v=KZoiJipnpiQ
+### Link for YouTube preview video: https://www.youtube.com/watch?v=KZoiJipnpiQ
 
 #   JavaScript DOM & UI: Teamwork Assignment
 
