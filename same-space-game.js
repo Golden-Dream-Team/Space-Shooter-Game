@@ -525,6 +525,11 @@ function Game() {
     // Restart the game
     this.restart = function() {
         //Implementation
+        endGameTheme.pause();
+        endGameTheme.currentTime = 0;
+        mainTheme.currentTime = 0;
+        mainTheme.play();
+
         this.init();
     };
 
