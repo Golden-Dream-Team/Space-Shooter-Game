@@ -8,6 +8,7 @@ var mainTheme = document.getElementById('main-theme'),
     bulletsFlag = true;
 
 bulletSound.volume = 0.2;
+plasmaSound.volume = 0.4;
 
 function imageRepository() {
     this.images = {}; // texture containerd

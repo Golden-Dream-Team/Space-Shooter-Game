@@ -19,11 +19,26 @@
     <div class="game-over" id="game-over">
         <p id="restart"></p>
     </div>
-    <audio id="main-theme" src="./sounds/main-theme.ogg" loop/>
-    <audio id="endgame-theme" src="./sounds/credits.ogg" loop/>
-    <audio id="bullet-sound" src="./sounds/blaster.mp3" />
-    <audio id="win-sound" src="./sounds/winner.mp3" />
-    <audio id="plasma-sound" src="./sounds/plasma.mp3" />
+    <audio id="main-theme" loop>
+		<source src="./sounds/main-theme.ogg" type="audio/mpeg"/>
+		Your browser does not support the audio element.
+    </audio>
+    <audio id="endgame-theme" loop>
+		<source src="./sounds/credits.ogg" type="audio/mpeg"/>
+		Your browser does not support the audio element.
+    </audio>
+    <audio id="bullet-sound">
+    	<source src="./sounds/blaster.mp3" type="audio/mpeg" />
+	 	Your browser does not support the audio element.
+    </audio>
+    <audio id="win-sound">
+    	<source src="./sounds/winner.mp3" type="audio/mpeg" />
+	 	Your browser does not support the audio element.
+    </audio>
+    <audio id="plasma-sound">
+    	<source src="./sounds/plasma.mp3" type="audio/mpeg" />
+	 	Your browser does not support the audio element.
+    </audio>
     <script src="same-space-game.js"></script>
 </body>
 
