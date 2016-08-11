@@ -1,5 +1,12 @@
 var game = new Game(); //Primary game instance
 
+var mainTheme = document.getElementById('main-theme'),
+    endGameTheme = document.getElementById('endgame-theme'),
+    bulletSound = document.getElementById('bullet-sound'),
+    winSound = document.getElementById('win-sound');
+
+bulletSound.volume = 0.2;
+
 function imageRepository() {
     this.images = {}; // texture containerd
     var sources = {
@@ -35,12 +42,12 @@ function Bullet(image, x, y, direction) {
         height: 12
     });
 
-    this.spawn = function (x, y) {
+    this.spawn = function(x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
     };
 
-    this.move = function () {
+    this.move = function() {
         if (detectCollision(this.sprite, game.enemy.sprite)) {
             game.enemy.hitPoints -= 1;
             this.sprite.setX(-20);
@@ -68,8 +75,7 @@ function Bullet(image, x, y, direction) {
         if (this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20) {
             this.sprite.setX(-20);
             this.sprite.setY(-20);
-        }
-        else {
+        } else {
             this.sprite.setY(this.sprite.getY() + (speed * direction));
         }
     };
@@ -95,30 +101,30 @@ function Plasma(image, explosionImg, direction) {
         height: 16
     });
 
-    this.spawn = function (x, y) {
+    this.spawn = function(x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
     };
 
     this.explode = function() {
-      this.explosion.setX(this.sprite.getX() - 100);
-      this.explosion.setY(this.sprite.getY() - 100);
-      this.sprite.setX(600);
-      this.sprite.setY(600);
-      this.exploded = true;
+        this.explosion.setX(this.sprite.getX() - 100);
+        this.explosion.setY(this.sprite.getY() - 100);
+        this.sprite.setX(600);
+        this.sprite.setY(600);
+        this.exploded = true;
     };
 
-    this.move = function () {
+    this.move = function() {
 
         if (this.exploded) {
-          counter += 1;
+            counter += 1;
         }
         if (this.exploded && counter > 30) {
-          this.explosion.setX(600);
-          this.explosion.setY(600);
-          this.exploded = false;
-          this.isInUse = false;
-          counter = 0;
+            this.explosion.setX(600);
+            this.explosion.setY(600);
+            this.exploded = false;
+            this.isInUse = false;
+            counter = 0;
         }
 
         if (detectCollision(this.sprite, game.enemy.sprite)) {
@@ -151,10 +157,9 @@ function Plasma(image, explosionImg, direction) {
             this.sprite.setX(600);
             this.sprite.setY(600);
             this.isInUse = false;
-        }
-        else {
+        } else {
             this.sprite.setY(this.sprite.getY() + (speed * direction));
-            this.sprite.setX(this.sprite.getX() + 3 *  Math.sin(this.sprite.getY() * 0.02));
+            this.sprite.setX(this.sprite.getX() + 3 * Math.sin(this.sprite.getY() * 0.02));
         }
     };
 }
@@ -163,7 +168,7 @@ function Pool(maxSize, image, direction) {
     var size = maxSize; // Max bullets allowed in the pool
     this.pool = [];
 
-    this.init = function () {
+    this.init = function() {
         var bullet,
             enemy,
             enemyBullet, i;
@@ -174,22 +179,24 @@ function Pool(maxSize, image, direction) {
         }
     };
 
-    this.get = function (x, y) {
+    this.get = function(x, y) {
         if (!this.pool[size - 1].alive) {
             this.pool[size - 1].spawn(x, y);
             this.pool.unshift(this.pool.pop());
+
+            bulletSound.currentTime = 0;
+            bulletSound.play();
         }
     };
 
-    this.animate = function () {
+    this.animate = function() {
         for (var j = 0; j < size; j++) {
             this.pool[j].move();
         }
         for (var i = 0; i < size; i++) {
             if (this.pool[i].alive) {
                 this.pool.push((this.pool.splice(i, 1))[0]);
-            }
-            else {
+            } else {
                 this.pool[i].sprite.SetX = -20;
                 this.pool[i].sprite.SetY = -20;
             }
@@ -209,21 +216,21 @@ function Ship(images, x, y) {
     this.down = false;
     this.right = false;
     this.hitPoints = 10;
-    this.plasma = new Plasma(images.plasma , images.plasmaExplosion, -1);
+    this.plasma = new Plasma(images.plasma, images.plasmaExplosion, -1);
     this.sprite = new Kinetic.Image({
         image: images.ship,
-        x: x,//175
-        y: y,//520
+        x: x, //175
+        y: y, //520
         width: 50,
         height: 50
     });
 
 
-    this.move = function () {
+    this.move = function() {
         this.bulletPool.animate();
 
         if (this.plasma.isInUse) {
-          this.plasma.move();
+            this.plasma.move();
         }
 
         if (this.right && this.sprite.getX() < 340) {
@@ -240,15 +247,15 @@ function Ship(images, x, y) {
         }
     };
 
-    this.fire = function () {
+    this.fire = function() {
         this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() - 15);
     };
 
     this.firePlasma = function() {
-      if (!this.plasma.isInUse) {
-        this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() - 55);
-        this.plasma.isInUse = true;
-      }
+        if (!this.plasma.isInUse) {
+            this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() - 55);
+            this.plasma.isInUse = true;
+        }
     };
 }
 
@@ -262,7 +269,7 @@ function Enemy(images, x, y) {
     this.down = false;
     this.right = false;
     this.hitPoints = 10;
-    this.plasma = new Plasma(images.plasma , images.plasmaExplosion, 1);
+    this.plasma = new Plasma(images.plasma, images.plasmaExplosion, 1);
     this.sprite = new Kinetic.Image({
         image: images.enemy,
         x: x,
@@ -271,11 +278,11 @@ function Enemy(images, x, y) {
         height: 50
     });
 
-    this.move = function () {
+    this.move = function() {
         this.bulletPool.animate();
 
         if (this.plasma.isInUse) {
-          this.plasma.move();
+            this.plasma.move();
         }
 
         if (this.right && this.sprite.getX() < 340) {
@@ -292,15 +299,15 @@ function Enemy(images, x, y) {
         }
     };
 
-    this.fire = function () {
+    this.fire = function() {
         this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() + 60);
     };
 
     this.firePlasma = function() {
-      if (!this.plasma.isInUse) {
-        this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() + 65);
-        this.plasma.isInUse = true;
-      }
+        if (!this.plasma.isInUse) {
+            this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() + 65);
+            this.plasma.isInUse = true;
+        }
     };
 }
 
@@ -334,13 +341,13 @@ function setupUILayer(uiLayer, images, ship, enemy) {
     var enemyHp = [];
 
     var gameTitle = new Kinetic.Text({
-        x: 410,
-        y: 280,
-        text: 'SPACE DUEL',
-        fontSize: 32,
-        fontFamily: 'Capture it',
-        fill: 'white'
-    }),
+            x: 410,
+            y: 280,
+            text: 'SPACE DUEL',
+            fontSize: 32,
+            fontFamily: 'Capture it',
+            fill: 'white'
+        }),
         i;
 
     var firstPlayerControls = new Kinetic.Text({
@@ -391,14 +398,28 @@ function setupUILayer(uiLayer, images, ship, enemy) {
     uiLayer.add(secondPlayerControls);
     uiLayer.draw();
 
-    this.decreaseEnemyHp = function () {
+    this.decreaseEnemyHp = function() {
         enemyHp.pop().destroy();
         this.enemyHealth -= 1;
+
+        if (enemyHp.length === 0) {
+            mainTheme.pause();
+            mainTheme.currentTime = 0;
+            winSound.play();
+            endGameTheme.play();
+        }
     };
 
-    this.decreaseShipHp = function () {
+    this.decreaseShipHp = function() {
         shipHp.pop().destroy();
         this.shipHealth -= 1;
+
+        if (shipHp.length === 0) {
+            mainTheme.pause();
+            mainTheme.currentTime = 0;
+            winSound.play();
+            endGameTheme.play();
+        }
     };
 
 }
@@ -412,7 +433,7 @@ function Game() {
         uiDisplayLayer,
         uiContainer;
 
-    this.init = function () {
+    this.init = function() {
 
         this.textures = new imageRepository();
 
@@ -453,7 +474,7 @@ function Game() {
         stage.add(bulletLayer);
     };
 
-    this.moveBackground = function () {
+    this.moveBackground = function() {
         if (background.sprite.getY() === 0) {
             background.sprite.setY(-9600);
         }
@@ -462,29 +483,27 @@ function Game() {
         bulletLayer.draw();
     };
 
-    this.moveship = function () {
+    this.moveship = function() {
         if (this.ship.hitPoints > 0) {
             this.ship.move();
             shipLayer.draw();
-        }
-        else {
+        } else {
             var winnerPlayer = 'Player 2';
             this.gameOver(winnerPlayer);
         }
     };
 
-    this.moveEnemy = function () {
+    this.moveEnemy = function() {
         if (this.enemy.hitPoints > 0) {
             this.enemy.move();
             shipLayer.draw();
-        }
-        else {
+        } else {
             var winnerPlayer = 'Player 1';
             this.gameOver(winnerPlayer);
         }
     };
 
-    this.drawUiDisplay = function () {
+    this.drawUiDisplay = function() {
         if (uiContainer.enemyHealth > this.enemy.hitPoints && this.enemy.hitPoints >= 0) {
             uiContainer.decreaseEnemyHp();
             uiDisplayLayer.draw();
@@ -492,25 +511,25 @@ function Game() {
         if (uiContainer.shipHealth > this.ship.hitPoints && this.ship.hitPoints >= 0) {
             uiContainer.decreaseShipHp();
             uiDisplayLayer.draw();
-        }
-        else {
+        } else {
             uiDisplayLayer.draw();
         }
     };
 
     // Start the animation loop
-    this.start = function () {
+    this.start = function() {
+        mainTheme.play();
         animate();
     };
 
     // Restart the game
-    this.restart = function () {
+    this.restart = function() {
         //Implementation
         this.init();
     };
 
     // Game over
-    this.gameOver = function (winnerPlayer) {
+    this.gameOver = function(winnerPlayer) {
         shipLayer.removeChildren();
         bulletLayer.remove(this.ship.bulletPool);
 
@@ -567,7 +586,7 @@ function detectCollision(objectA, objectB) {
         objectA.getHeight() + objectA.getY() > objectB.getY());
 }
 
-document.body.onkeydown = function (e) {
+document.body.onkeydown = function(e) {
     var keyCode = e.keyCode;
     if (keyCode === 38) { //upKey
         game.enemy.up = true;
@@ -603,7 +622,7 @@ document.body.onkeydown = function (e) {
         game.ship.firePlasma();
     }
 };
-document.body.onkeyup = function (e) {
+document.body.onkeyup = function(e) {
     var keyCode = e.keyCode;
     if (keyCode === 38) { //upKey
         game.enemy.up = false;
@@ -623,22 +642,22 @@ document.body.onkeyup = function (e) {
         game.ship.right = false;
     }
 };
-var restart=document.getElementById("restart");
-restart.onclick= function(e) {
+var restart = document.getElementById("restart");
+restart.onclick = function(e) {
     game.restart();
-}
-window.requestAnimFrame = (function () {
+};
+window.requestAnimFrame = (function() {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-        function (/* function */ callback, /* DOMElement */ element) {
+        function( /* function */ callback, /* DOMElement */ element) {
             window.setTimeout(callback, 1000 / 60);
         };
 })();
 
-window.onload = function () {
+window.onload = function() {
     game.init();
     game.start();
 };
