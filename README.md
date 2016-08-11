@@ -1,5 +1,7 @@
 # Space-Duel
 
+### Team "Golden Dream"
+
 |       Name        |      Telerik Academy Username      |
 |:-----------------:|:----------------------------------:|
 | Димитър Стойков   |           lllevski                 |
@@ -14,6 +16,8 @@
 ### Link for YouTube preview video : https://www.youtube.com/watch?v=KZoiJipnpiQ
 
 ### Showcase project link : http://best.telerikacademy.com/projects/311/Space-Duel
+
+![preview](https://github.com/Golden-Dream-Team/Space-Shooter-Game/tree/master/Resources/previewImg.png)
 #   JavaScript DOM & UI: Teamwork Assignment
 
 This document describes the teamwork assignment for Telerik Academy students in JavaScript UI & DOM course
