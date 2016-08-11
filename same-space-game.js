@@ -354,6 +354,9 @@ function Game() {
         uiContainer.decreaseShipHp();
         uiDisplayLayer.draw();
       }
+      else{
+          uiDisplayLayer.draw();
+      }
     };
 
     this.moveenemy = function () {
