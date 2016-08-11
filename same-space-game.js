@@ -12,7 +12,9 @@ plasmaSound.volume = 0.4;
 winSound.volume = 0.2;
 
 function imageRepository() {
-    this.images = {}; // texture containerd
+
+    // Texture Container
+    this.images = {};
     var sources = {
         bg: 'Resources/starBackground.png',
         ship: 'Resources/ship.png',
@@ -25,9 +27,8 @@ function imageRepository() {
         healthBlue: 'Resources/blueHealthBar.png',
         healthGreen: 'Resources/greenHealthBar.png'
 
-    };
-
-    var numImages = Object.keys(sources).length;
+    },
+        numImages = Object.keys(sources).length;
 
     for (var src in sources) {
         this.images[src] = new Image();
@@ -46,12 +47,12 @@ function Bullet(image, x, y, direction) {
         height: 12
     });
 
-    this.spawn = function(x, y) {
+    this.spawn = function (x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
     };
 
-    this.move = function() {
+    this.move = function () {
         if (detectCollision(this.sprite, game.enemy.sprite)) {
             game.enemy.hitPoints -= 1;
             this.sprite.setX(-20);
@@ -105,7 +106,7 @@ function Plasma(image, explosionImg, direction) {
         height: 16
     });
 
-    this.spawn = function(x, y) {
+    this.spawn = function (x, y) {
         this.sprite.setX(x);
         this.sprite.setY(y);
         if (bulletsFlag) {
@@ -114,7 +115,7 @@ function Plasma(image, explosionImg, direction) {
         }
     };
 
-    this.explode = function() {
+    this.explode = function () {
         this.explosion.setX(this.sprite.getX() - 100);
         this.explosion.setY(this.sprite.getY() - 100);
         this.sprite.setX(600);
@@ -122,7 +123,7 @@ function Plasma(image, explosionImg, direction) {
         this.exploded = true;
     };
 
-    this.move = function() {
+    this.move = function () {
 
         if (this.exploded) {
             counter += 1;
@@ -161,7 +162,8 @@ function Plasma(image, explosionImg, direction) {
             counter = 31;
         }
 
-        if (!this.exploded && this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20 || !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380) {
+        if (!this.exploded && this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20
+            || !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380) {
             this.sprite.setX(600);
             this.sprite.setY(600);
             this.isInUse = false;
@@ -173,10 +175,12 @@ function Plasma(image, explosionImg, direction) {
 }
 
 function Pool(maxSize, image, direction) {
-    var size = maxSize; // Max bullets allowed in the pool
+
+    // Max bullets allowed in the pool
+    var size = maxSize;
     this.pool = [];
 
-    this.init = function() {
+    this.init = function () {
         var bullet,
             enemy,
             enemyBullet, i;
@@ -187,7 +191,7 @@ function Pool(maxSize, image, direction) {
         }
     };
 
-    this.get = function(x, y) {
+    this.get = function (x, y) {
         if (!this.pool[size - 1].alive) {
             this.pool[size - 1].spawn(x, y);
             this.pool.unshift(this.pool.pop());
@@ -199,7 +203,7 @@ function Pool(maxSize, image, direction) {
         }
     };
 
-    this.animate = function() {
+    this.animate = function () {
         for (var j = 0; j < size; j++) {
             this.pool[j].move();
         }
@@ -216,16 +220,17 @@ function Pool(maxSize, image, direction) {
 }
 
 function Ship(images, x, y) {
+
     this.speed = 3;
     this.bulletPool = new Pool(30, images.redWpn, -1);
     this.bulletPool.init();
-    this.collidableWith = "redWpn";
-    this.type = "ship";
+    this.hitPoints = 10;
+
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
-    this.hitPoints = 10;
+
     this.plasma = new Plasma(images.plasma, images.plasmaExplosion, -1);
     this.sprite = new Kinetic.Image({
         image: images.ship,
@@ -235,8 +240,7 @@ function Ship(images, x, y) {
         height: 50
     });
 
-
-    this.move = function() {
+    this.move = function () {
         this.bulletPool.animate();
 
         if (this.plasma.isInUse) {
@@ -257,11 +261,11 @@ function Ship(images, x, y) {
         }
     };
 
-    this.fire = function() {
+    this.fire = function () {
         this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() - 15);
     };
 
-    this.firePlasma = function() {
+    this.firePlasma = function () {
         if (!this.plasma.isInUse) {
             this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() - 55);
             this.plasma.isInUse = true;
@@ -273,12 +277,13 @@ function Enemy(images, x, y) {
     this.speed = 3;
     this.bulletPool = new Pool(30, images.blueWpn, 1);
     this.bulletPool.init();
-    this.collidableWith = "blueWpn";
+    this.hitPoints = 10;
+
     this.up = false;
     this.left = false;
     this.down = false;
     this.right = false;
-    this.hitPoints = 10;
+
     this.plasma = new Plasma(images.plasma, images.plasmaExplosion, 1);
     this.sprite = new Kinetic.Image({
         image: images.enemy,
@@ -288,7 +293,8 @@ function Enemy(images, x, y) {
         height: 50
     });
 
-    this.move = function() {
+    this.move = function () {
+
         this.bulletPool.animate();
 
         if (this.plasma.isInUse) {
@@ -309,11 +315,11 @@ function Enemy(images, x, y) {
         }
     };
 
-    this.fire = function() {
+    this.fire = function () {
         this.bulletPool.get(this.sprite.getX() + 23, this.sprite.getY() + 60);
     };
 
-    this.firePlasma = function() {
+    this.firePlasma = function () {
         if (!this.plasma.isInUse) {
             this.plasma.spawn(this.sprite.getX() + 23, this.sprite.getY() + 65);
             this.plasma.isInUse = true;
@@ -347,10 +353,9 @@ function setupUILayer(uiLayer, images, ship, enemy) {
     this.enemyHealth = game.enemy.hitPoints;
     uiLayer.add(uiDisplay.sprite);
 
-    var shipHp = [];
-    var enemyHp = [];
-
-    var gameTitle = new Kinetic.Text({
+    var shipHp = [], i,
+        enemyHp = [],
+        gameTitle = new Kinetic.Text({
             x: 410,
             y: 280,
             text: 'SPACE DUEL',
@@ -358,28 +363,26 @@ function setupUILayer(uiLayer, images, ship, enemy) {
             fontFamily: 'Capture it',
             fill: 'white'
         }),
-        i;
 
-    var firstPlayerControls = new Kinetic.Text({
-        x: 410,
-        y: 360,
-        text: 'Player 1\nControls:\n\n    Move: W A S D\nShoot: Space',
-        fontSize: 20,
-        align: 'center',
-        fontFamily: 'Capture it',
-        fill: 'white'
-    });
+        firstPlayerControls = new Kinetic.Text({
+            x: 410,
+            y: 360,
+            text: 'Player 1\nControls:\n\n    Move: W A S D\nShoot: Space',
+            fontSize: 20,
+            align: 'center',
+            fontFamily: 'Capture it',
+            fill: 'white'
+        }),
 
-    // Watch out for compatibility through browsers with new line char
-    var secondPlayerControls = new Kinetic.Text({
-        x: 410,
-        y: 130,
-        text: 'Player 2\nControls:\n\n    Move: ↑ ← ↓ →\nShoot: 0',
-        fontSize: 20,
-        align: 'center',
-        fontFamily: 'Capture it',
-        fill: 'white'
-    });
+        secondPlayerControls = new Kinetic.Text({
+            x: 410,
+            y: 130,
+            text: 'Player 2\nControls:\n\n    Move: ↑ ← ↓ →\nShoot: 0',
+            fontSize: 20,
+            align: 'center',
+            fontFamily: 'Capture it',
+            fill: 'white'
+        });
 
     for (i = 0; i < 10; i += 1) {
         enemyHp[i] = new Kinetic.Image({
@@ -408,7 +411,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
     uiLayer.add(secondPlayerControls);
     uiLayer.draw();
 
-    this.decreaseEnemyHp = function() {
+    this.decreaseEnemyHp = function () {
         enemyHp.pop().destroy();
         this.enemyHealth -= 1;
 
@@ -421,7 +424,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
         }
     };
 
-    this.decreaseShipHp = function() {
+    this.decreaseShipHp = function () {
         shipHp.pop().destroy();
         this.shipHealth -= 1;
 
@@ -433,7 +436,6 @@ function setupUILayer(uiLayer, images, ship, enemy) {
             bulletsFlag = false;
         }
     };
-
 }
 
 function Game() {
@@ -445,7 +447,7 @@ function Game() {
         uiDisplayLayer,
         uiContainer;
 
-    this.init = function() {
+    this.init = function () {
 
         this.textures = new imageRepository();
 
@@ -455,16 +457,15 @@ function Game() {
             height: 600
         });
 
-        bulletLayer = new Kinetic.Layer();
-        shipLayer = new Kinetic.Layer();
         backlayer = new Kinetic.Layer();
         uiDisplayLayer = new Kinetic.Layer();
+        bulletLayer = new Kinetic.Layer();
+        shipLayer = new Kinetic.Layer();
 
+        background = new Background(this.textures.images);
         this.ship = new Ship(this.textures.images, 175, 535);
         this.enemy = new Enemy(this.textures.images, 175, 20);
-        background = new Background(this.textures.images);
         uiDisplay = new UIDisplay(this.textures.images);
-
         uiContainer = new setupUILayer(uiDisplayLayer, this.textures.images, this.ship, this.enemy);
 
         backlayer.add(background.sprite);
@@ -486,7 +487,7 @@ function Game() {
         stage.add(bulletLayer);
     };
 
-    this.moveBackground = function() {
+    this.moveBackground = function () {
         if (background.sprite.getY() === 0) {
             background.sprite.setY(-9600);
         }
@@ -495,7 +496,7 @@ function Game() {
         bulletLayer.draw();
     };
 
-    this.moveship = function() {
+    this.moveship = function () {
         if (this.ship.hitPoints > 0) {
             this.ship.move();
             shipLayer.draw();
@@ -505,7 +506,7 @@ function Game() {
         }
     };
 
-    this.moveEnemy = function() {
+    this.moveEnemy = function () {
         if (this.enemy.hitPoints > 0) {
             this.enemy.move();
             shipLayer.draw();
@@ -515,7 +516,7 @@ function Game() {
         }
     };
 
-    this.drawUiDisplay = function() {
+    this.drawUiDisplay = function () {
         if (uiContainer.enemyHealth > this.enemy.hitPoints && this.enemy.hitPoints >= 0) {
             uiContainer.decreaseEnemyHp();
             uiDisplayLayer.draw();
@@ -523,19 +524,20 @@ function Game() {
         if (uiContainer.shipHealth > this.ship.hitPoints && this.ship.hitPoints >= 0) {
             uiContainer.decreaseShipHp();
             uiDisplayLayer.draw();
-        } else {
+        }
+        else {
             uiDisplayLayer.draw();
         }
     };
 
     // Start the animation loop
-    this.start = function() {
+    this.start = function () {
         mainTheme.play();
         animate();
     };
 
     // Restart the game
-    this.restart = function() {
+    this.restart = function () {
         //Implementation
         endGameTheme.pause();
         endGameTheme.currentTime = 0;
@@ -547,7 +549,7 @@ function Game() {
     };
 
     // Game over
-    this.gameOver = function(winnerPlayer) {
+    this.gameOver = function (winnerPlayer) {
         shipLayer.removeChildren();
         bulletLayer.remove(this.ship.bulletPool);
 
@@ -559,27 +561,27 @@ function Game() {
             align: 'center',
             fontFamily: 'Capture it',
             fill: 'red'
-        });
+        }),
 
-        var restartGame = new Kinetic.Text({
-            x: 140,
-            y: 350,
-            text: 'RESTART',
-            fontSize: 30,
-            align: 'center',
-            fontFamily: 'Capture it',
-            fill: 'white'
-        });
+            restartGame = new Kinetic.Text({
+                x: 140,
+                y: 350,
+                text: 'RESTART',
+                fontSize: 30,
+                align: 'center',
+                fontFamily: 'Capture it',
+                fill: 'white'
+            }),
 
-        var winnerPlayerText = new Kinetic.Text({
-            x: 100,
-            y: 300,
-            text: winnerPlayer + ' wins!',
-            fontSize: 30,
-            align: 'center',
-            fontFamily: 'Capture it',
-            fill: 'white'
-        });
+            winnerPlayerText = new Kinetic.Text({
+                x: 100,
+                y: 300,
+                text: winnerPlayer + ' wins!',
+                fontSize: 30,
+                align: 'center',
+                fontFamily: 'Capture it',
+                fill: 'white'
+            });
 
 
         shipLayer.add(gameOverText);
@@ -598,86 +600,88 @@ function animate() {
 
 //pass Kinetic.Image type objects
 function detectCollision(objectA, objectB) {
+
     return (objectA.getX() < objectB.getX() + objectB.getWidth() &&
         objectA.getX() + objectA.getWidth() > objectB.getX() &&
         objectA.getY() < objectB.getY() + objectB.getHeight() &&
         objectA.getHeight() + objectA.getY() > objectB.getY());
 }
 
-document.body.onkeydown = function(e) {
+document.body.onkeydown = function (e) {
     var keyCode = e.keyCode;
-    if (keyCode === 38) { //upKey
+    if (keyCode === 38) { //UpKey
         game.enemy.up = true;
         game.enemy.down = false;
-    } else if (keyCode === 40) { //downKey
+    } else if (keyCode === 40) { //DownKey
         game.enemy.down = true;
         game.enemy.up = false;
-    } else if (keyCode === 37) { //leftKey
+    } else if (keyCode === 37) { //LeftKey
         game.enemy.left = true;
         game.enemy.right = false;
-    } else if (keyCode === 39) { //rightKey
+    } else if (keyCode === 39) { //RightKey
         game.enemy.right = true;
         game.enemy.left = false;
-    } else if (keyCode === 98) { //numPad 2
+    } else if (keyCode === 98) { //NumPad 2
         game.enemy.fire();
-    } else if (keyCode === 99) { //numPad 3
+    } else if (keyCode === 99) { //NumPad 3
         game.enemy.firePlasma();
-    } else if (keyCode === 87) { //w
+    } else if (keyCode === 87) { // w
         game.ship.up = true;
         game.ship.down = false;
-    } else if (keyCode === 65) { //a
+    } else if (keyCode === 65) { // a
         game.ship.left = true;
         game.ship.right = false;
-    } else if (keyCode === 83) { //s
+    } else if (keyCode === 83) { // s
         game.ship.down = true;
         game.ship.up = false;
-    } else if (keyCode === 68) { //d
+    } else if (keyCode === 68) { // d
         game.ship.right = true;
         game.ship.left = false;
-    } else if (keyCode === 32) { //space
+    } else if (keyCode === 32) { // space
         game.ship.fire();
-    } else if (keyCode === 77) { //m
+    } else if (keyCode === 77) { // m
         game.ship.firePlasma();
     }
 };
-document.body.onkeyup = function(e) {
+document.body.onkeyup = function (e) {
     var keyCode = e.keyCode;
-    if (keyCode === 38) { //upKey
+    if (keyCode === 38) { // UpKey
         game.enemy.up = false;
-    } else if (keyCode === 40) { //downKey
+    } else if (keyCode === 40) { // DownKey
         game.enemy.down = false;
-    } else if (keyCode === 37) { //leftKey
+    } else if (keyCode === 37) { // LeftKey
         game.enemy.left = false;
-    } else if (keyCode === 39) { //rightKey
+    } else if (keyCode === 39) { // RightKey
         game.enemy.right = false;
-    } else if (keyCode === 87) { //w
+    } else if (keyCode === 87) { // w
         game.ship.up = false;
-    } else if (keyCode === 65) { //a
+    } else if (keyCode === 65) { // a
         game.ship.left = false;
-    } else if (keyCode === 83) { //s
+    } else if (keyCode === 83) { // s
         game.ship.down = false;
-    } else if (keyCode === 68) { //d
+    } else if (keyCode === 68) { // d
         game.ship.right = false;
     }
 };
 var restart = document.getElementById("restart");
-restart.onclick = function(e) {
-    if(!bulletsFlag) {
+restart.onclick = function (e) {
+    if (!bulletsFlag) {
         game.restart();
     }
 };
-window.requestAnimFrame = (function() {
+window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-        function( /* function */ callback, /* DOMElement */ element) {
+        function ( /* function */ callback, /* DOMElement */ element) {
             window.setTimeout(callback, 1000 / 60);
         };
 })();
 
-document.getElementById('startUpContainer').onclick = function() {
+// Use of the default DOM API
+document.getElementById('startUpContainer').onclick = function () {
     this.style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
     game.init();
