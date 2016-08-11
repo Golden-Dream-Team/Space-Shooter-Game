@@ -262,7 +262,7 @@ function setupUILayer(uiLayer, images, ship, enemy) {
             y: 525,
             width: 16,
             height: 20,
-            });
+        });
         uiLayer.add(shipHp[i]);
     }
 
@@ -271,19 +271,17 @@ function setupUILayer(uiLayer, images, ship, enemy) {
     uiLayer.add(secondPlayerControls);
     uiLayer.draw();
 
-    this.decreaseEnemyHp = function() {
-      enemyHp.pop().destroy();
-      this.enemyHealth -= 1;
+    this.decreaseEnemyHp = function () {
+        enemyHp.pop().destroy();
+        this.enemyHealth -= 1;
     };
 
-    this.decreaseShipHp = function() {
-      shipHp.pop().destroy();
-      this.shipHealth -= 1;
+    this.decreaseShipHp = function () {
+        shipHp.pop().destroy();
+        this.shipHealth -= 1;
     };
 
 }
-
-
 
 function Game() {
     var stage,
@@ -341,27 +339,41 @@ function Game() {
     };
 
     this.moveship = function () {
-        this.ship.move();
-        shipLayer.draw();
+        if (this.ship.hitPoints > 0) {
+            this.ship.move();
+            shipLayer.draw();
+        }
+        else {
+            var winnerPlayer = 'Player 2';
+            this.gameOver(winnerPlayer);
+            this.restart();
+        }
+    };
+
+    this.moveEnemy = function () {
+        if (this.enemy.hitPoints > 0) {
+            this.enemy.move();
+            shipLayer.draw();
+        }
+        else {
+            var winnerPlayer = 'Player 1';
+            this.gameOver(winnerPlayer);
+            this.restart();
+        }
     };
 
     this.drawUiDisplay = function () {
-      if (uiContainer.enemyHealth > this.enemy.hitPoints) {
-        uiContainer.decreaseEnemyHp();
-        uiDisplayLayer.draw();
-      }
-      if (uiContainer.shipHealth > this.ship.hitPoints) {
-        uiContainer.decreaseShipHp();
-        uiDisplayLayer.draw();
-      }
-      else{
-          uiDisplayLayer.draw();
-      }
-    };
-
-    this.moveenemy = function () {
-        this.enemy.move();
-        shipLayer.draw();
+        if (uiContainer.enemyHealth > this.enemy.hitPoints && this.enemy.hitPoints >= 0) {
+            uiContainer.decreaseEnemyHp();
+            uiDisplayLayer.draw();
+        }
+        if (uiContainer.shipHealth > this.ship.hitPoints && this.ship.hitPoints >= 0) {
+            uiContainer.decreaseShipHp();
+            uiDisplayLayer.draw();
+        }
+        else {
+            uiDisplayLayer.draw();
+        }
     };
 
     // Start the animation loop
@@ -371,10 +383,35 @@ function Game() {
 
     // Restart the game
     this.restart = function () {
+        //Implementation
     };
 
     // Game over
-    this.gameOver = function () {
+    this.gameOver = function (winnerPlayer) {
+        shipLayer.removeChildren();
+
+        var gameOverText = new Kinetic.Text({
+            x: 30,
+            y: 200,
+            text: 'GAME OVER',
+            fontSize: 60,
+            align: 'center',
+            fontFamily: 'Capture it',
+            fill: 'red'
+        });
+
+        var winnerPlayerText = new Kinetic.Text({
+            x: 90,
+            y: 300,
+            text: winnerPlayer + ' wins!',
+            fontSize: 30,
+            align: 'center',
+            fontFamily: 'Capture it',
+            fill: 'white'
+        });
+
+        shipLayer.add(gameOverText);
+        shipLayer.add(winnerPlayerText);
     };
 }
 
@@ -382,7 +419,7 @@ function animate() {
     game.moveBackground();
     game.drawUiDisplay();
     game.moveship();
-    game.moveenemy();
+    game.moveEnemy();
     window.requestAnimationFrame(animate);
 }
 
@@ -408,7 +445,7 @@ document.body.onkeydown = function (e) {
     } else if (keyCode === 39) { //rightKey
         game.enemy.right = true;
         game.enemy.left = false;
-    } else if (keyCode === 45) { //numpadIns
+    } else if (keyCode === 98) { //numPad 2
         game.enemy.fire();
     } else if (keyCode === 87) { //w
         game.ship.up = true;
