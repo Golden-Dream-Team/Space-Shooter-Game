@@ -17,7 +17,7 @@
 
 ### Showcase project link : http://best.telerikacademy.com/projects/311/Space-Duel
 
-![preview](https://github.com/Golden-Dream-Team/Space-Shooter-Game/tree/master/Resources/previewImg.png)
+![Preview Image](http://i66.tinypic.com/24zli68.jpg)
 #   JavaScript DOM & UI: Teamwork Assignment
 
 This document describes the teamwork assignment for Telerik Academy students in JavaScript UI & DOM course
