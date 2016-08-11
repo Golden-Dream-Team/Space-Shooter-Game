@@ -11,8 +11,9 @@
 | Тодор Стайковски  |           Todor13                  | 
 
 
-### Link for YouTube preview video: https://www.youtube.com/watch?v=KZoiJipnpiQ
+### Link for YouTube preview video : https://www.youtube.com/watch?v=KZoiJipnpiQ
 
+### Showcase project link : http://best.telerikacademy.com/projects/311/Space-Duel
 #   JavaScript DOM & UI: Teamwork Assignment
 
 This document describes the teamwork assignment for Telerik Academy students in JavaScript UI & DOM course
