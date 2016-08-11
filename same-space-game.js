@@ -9,6 +9,7 @@ var mainTheme = document.getElementById('main-theme'),
 
 bulletSound.volume = 0.2;
 plasmaSound.volume = 0.4;
+winSound.volume = 0.2;
 
 function imageRepository() {
     this.images = {}; // texture containerd
@@ -661,7 +662,9 @@ document.body.onkeyup = function(e) {
 };
 var restart = document.getElementById("restart");
 restart.onclick = function(e) {
-    game.restart();
+    if(!bulletsFlag) {
+        game.restart();
+    }
 };
 window.requestAnimFrame = (function() {
     return window.requestAnimationFrame ||
