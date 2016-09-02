@@ -7,9 +7,11 @@ var mainTheme = document.getElementById('main-theme'),
     plasmaSound = document.getElementById('plasma-sound'),
     bulletsFlag = true;
 
-bulletSound.volume = 0.2;
-plasmaSound.volume = 0.4;
-winSound.volume = 0.2;
+mainTheme.volume = 0.2;
+bulletSound.volume = 0.1;
+plasmaSound.volume = 0.1;
+winSound.volume = 0.1;
+endGameTheme.volume = 0.1;
 
 function imageRepository() {
 
@@ -163,7 +165,7 @@ function Plasma(image, explosionImg, direction) {
         }
 
         if (!this.exploded && this.sprite.getY() < 10 && this.sprite.getY() !== -20 && this.sprite.getX() !== -20 ||
-         !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380 || !this.exploded && this.sprite.getY() > 580) {
+            !this.exploded && this.sprite.getX() < 2 || !this.exploded && this.sprite.getX() > 380 || !this.exploded && this.sprite.getY() > 580) {
             this.sprite.setX(600);
             this.sprite.setY(600);
             this.isInUse = false;
@@ -539,7 +541,7 @@ function Game() {
 
     // Restart the game
     this.restart = function () {
-        //Implementation
+
         endGameTheme.pause();
         endGameTheme.currentTime = 0;
         mainTheme.currentTime = 0;
@@ -565,9 +567,9 @@ function Game() {
         }),
 
             restartGame = new Kinetic.Text({
-                x: 140,
+                x: 87,
                 y: 350,
-                text: 'RESTART',
+                text: 'Press enter to \nrestart',
                 fontSize: 30,
                 align: 'center',
                 fontFamily: 'Capture it',
@@ -575,7 +577,7 @@ function Game() {
             }),
 
             winnerPlayerText = new Kinetic.Text({
-                x: 100,
+                x: 90,
                 y: 300,
                 text: winnerPlayer + ' wins !',
                 fontSize: 30,
@@ -634,7 +636,7 @@ document.body.onkeydown = function (e) {
     } else if (keyCode === 68) { // d
         game.ship.right = true;
         game.ship.left = false;
-     }
+    }
 };
 document.body.onkeyup = function (e) {
     var keyCode = e.keyCode;
@@ -655,9 +657,9 @@ document.body.onkeyup = function (e) {
     } else if (keyCode === 68) { // d
         game.ship.right = false;
     } else if (keyCode === 32) { // space
-      game.ship.fire();
+        game.ship.fire();
     } else if (keyCode === 77) { // m
-      game.ship.firePlasma();
+        game.ship.firePlasma();
     } else if (keyCode === 98) { //NumPad 2
         game.enemy.fire();
     } else if (keyCode === 99) { //NumPad 3
@@ -665,9 +667,8 @@ document.body.onkeyup = function (e) {
     }
 };
 
-var restart = document.getElementById("restart");
-restart.onclick = function (e) {
-    if (!bulletsFlag) {
+window.onkeydown = function (e) {
+    if (e.keyCode === 13 && !bulletsFlag) {
         game.restart();
     }
 };
